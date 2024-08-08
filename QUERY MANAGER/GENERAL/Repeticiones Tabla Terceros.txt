@@ -1,0 +1,4 @@
+select "U_BPP_NOMBRE" "Nombre", count("U_BPP_NOMBRE") "NroRepeticiones"
+from "@BPP_TERCEROS"
+group by "U_BPP_NOMBRE"
+having count("U_BPP_NOMBRE") > 1

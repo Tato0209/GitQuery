@@ -1,0 +1,6 @@
+SELECT T0."DocNum",CASE WHEN T0."DocStatus"='O' THEN 'ABIERTO' ELSE 'CERRADO' END "Estado" ,T0."DocDate" "F. Contabilización",
+T0."CardCode",T0."CardName", T0."LicTradNum" "Ruc",T0."CANCELED", T0."DocDate", T0."NumAtCard", T0."DocCur", T0."DocTotal", T0."DocTotalFC", T0."Comments", T0."JrnlMemo", T0."U_FLUJOC"
+ FROM "OPOR" T0 
+WHERE 
+
+T0."DocDate" >= '[%1]' AND T0."DocDate" <= '[%2]'

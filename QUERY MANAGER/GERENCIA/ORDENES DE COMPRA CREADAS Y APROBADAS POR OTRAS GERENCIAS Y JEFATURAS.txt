@@ -1,0 +1,15 @@
+SELECT T0."DocNum",T0."DocDate", T0."DocDueDate", T0."CardCode", T0."CardName",T0."DocCur",
+CASE WHEN T0."DocCur"='SOL' THEN  T0."DocTotal" ELSE  T0."DocTotalFC" END "Total", T0."Comments", T0."U_FLUJOC",T1."USER_CODE" "Código de Usuario Aprobador",T1."U_NAME" "Nombre de Usuario Aprobador"
+FROM "OPOR" T0 
+INNER JOIN "OWDD" I1 ON  T0."DocEntry" = I1."DocEntry" AND  I1."ObjType"=22 
+INNER JOIN "WDD1" I2 ON I1."WddCode"=I2."WddCode" 
+INNER JOIN "OUSR" T1 ON T1."USERID"=I2."UserID"
+WHERE T0."CANCELED"='N' AND (T0."DocDate" BETWEEN '[%0]' AND '[%1]' ) AND T0."DocNum" NOT IN (
+
+SELECT T0."DocNum" FROM "OPOR" T0 
+INNER JOIN "OWDD" I1 ON  T0."DocEntry" = I1."DocEntry" AND  I1."ObjType"=22 
+INNER JOIN "WDD1" I2 ON I1."WddCode"=I2."WddCode"
+INNER JOIN "OUSR" T1 ON T1."USERID"=I2."UserID"
+WHERE T0."CANCELED"='N' AND T1."USER_CODE"='gerencia' AND (T0."DocDate" BETWEEN '[%0]' AND '[%1]' )
+)
+ORDER BY T0."DocDate" DESC

@@ -1,0 +1,1 @@
+SELECT T1."StepCode", T1."UserID", T2."U_NAME", T3."jobTitle", T3."officeTel", T3."email" FROM OWDD T0 inner join WDD1 T1 on T0."WddCode"= T1."WddCode" INNER JOIN OUSR T2 ON T1."UserID" = T2."USERID" INNER JOIN OHEM T3 ON T2."USERID" = T3."userId" WHERE T0."DocEntry" =275 and  T0."ObjType" ='22' and  T1."Status" ='Y'

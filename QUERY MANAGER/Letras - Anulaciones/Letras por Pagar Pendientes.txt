@@ -1,0 +1,16 @@
+SELECT 'LETRA' "LETRA",T1."ShortName",IFNULL((SELECT "CardName" FROM "OCRD" WHERE "CardCode"=T1."ShortName"),'') AS "Proveedor",T1."U_VS_NUMEROLTR",T1."TransId",T1."Line_ID",
+CASE WHEN T1."FCCurrency"='USD' THEN 'USD' ELSE 'SOL' END "Moneda",
+CASE WHEN T1."FCCurrency"='USD' THEN T1."SYSCred" ELSE T1."Credit" END "Importe",
+IFNULL((CASE WHEN T1."FCCurrency"='USD' THEN T2."WTAmntSC" ELSE T2."WTAmnt" END),0) "Retencion",
+--CASE WHEN T1."FCCurrency"='USD' THEN T1."BalScCred" ELSE T1."BalDueCred" END "Saldo Vencido"
+(CASE WHEN IFNULL(T2."WTCode",'')<>'' 
+THEN (CASE WHEN T1."FCCurrency"='USD' 
+		THEN T2."TxblAmntSC"-T2."WTAmntSC" 
+		ELSE T2."TaxbleAmnt"-T2."WTAmnt" END)
+								 ELSE (CASE WHEN T1."FCCurrency"='USD' THEN T1."BalScCred" ELSE T1."BalDueCred" END)END) "Saldo Vencido"
+,T1."RefDate" "Fecha de emisión",T1."DueDate",T0."Memo"
+FROM "JDT1" AS T1 INNER JOIN "OJDT" AS "T0" ON T0."TransId"=T1."TransId"
+LEFT JOIN "JDT2" T2 ON T1."TransId"=T2."AbsEntry"
+WHERE T1."U_VS_ESLETRA"='SI' AND (
+CASE WHEN T1."FCCurrency"='USD' THEN T1."BalScCred" ELSE T1."BalDueCred" END)>0
+ORDER BY 2

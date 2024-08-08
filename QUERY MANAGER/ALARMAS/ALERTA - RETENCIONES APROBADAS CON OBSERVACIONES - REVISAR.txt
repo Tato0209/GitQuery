@@ -1,0 +1,3 @@
+SELECT "DocEntry","DocNum","DocDate","U_BPV_SERI","U_BPV_NCON2","CardCode","CardName","U_VS_CDRRSM" FROM "OVPM" 
+WHERE
+"U_BPV_SERI"='R001-20' AND IFNULL("U_BPV_NCON2",'')<>'' AND "U_VS_CDRRSM" LIKE '%obser%' AND "U_VS_FESTAT"='R'

@@ -1,0 +1,48 @@
+IF MONTH (now()) ='1'
+THEN
+Select SUM("LineTotal") from POR1 where  "DocDate" BETWEEN '20180101' AND '20180131' AND "LineStatus"='O' and "U_CL_PRE_CUENTA"=$[$38.U_CL_PRE_CUENTA] ;
+END IF;
+IF MONTH (now()) ='2'
+THEN
+Select SUM("LineTotal") from POR1 where  "DocDate" BETWEEN '20180201' AND '20180228' AND "LineStatus"='O' and "U_CL_PRE_CUENTA"=$[$38.U_CL_PRE_CUENTA] ;
+END IF;
+IF MONTH (now()) ='3'
+THEN
+Select SUM("LineTotal") from POR1 where  "DocDate" BETWEEN '20180301' AND '20180331' AND "LineStatus"='O' and "U_CL_PRE_CUENTA"=$[$38.U_CL_PRE_CUENTA] ;
+END IF;
+IF MONTH (now()) ='4'
+THEN
+Select SUM("LineTotal") from POR1 where  "DocDate" BETWEEN '20180401' AND '20180430' AND "LineStatus"='O' and "U_CL_PRE_CUENTA"=$[$38.U_CL_PRE_CUENTA] ;
+END IF;
+IF MONTH (now()) ='5'
+THEN
+Select SUM("LineTotal") from POR1 where  "DocDate" BETWEEN '20180501' AND '20180531' AND "LineStatus"='O' and "U_CL_PRE_CUENTA"=$[$38.U_CL_PRE_CUENTA] ;
+END IF;
+IF MONTH (now()) ='6'
+THEN
+Select SUM("LineTotal") from POR1 where  "DocDate" BETWEEN '20180601' AND '20180630' AND "LineStatus"='O' and "U_CL_PRE_CUENTA"=$[$38.U_CL_PRE_CUENTA] ;
+END IF;
+IF MONTH (now()) ='7'
+THEN
+Select SUM("LineTotal") from POR1 where  "DocDate" BETWEEN '20180701' AND '20180731' AND "LineStatus"='O' and "U_CL_PRE_CUENTA"=$[$38.U_CL_PRE_CUENTA] ;
+END IF;
+IF MONTH (now()) ='8'
+THEN
+Select SUM("LineTotal") from POR1 where  "DocDate" BETWEEN '20180801' AND '20180830' AND "LineStatus"='O' and "U_CL_PRE_CUENTA"=$[$38.U_CL_PRE_CUENTA] ;
+END IF;
+IF MONTH (now()) ='9'
+THEN
+Select SUM("LineTotal") from POR1 where  "DocDate" BETWEEN '20180901' AND '20180930' AND "LineStatus"='O' and "U_CL_PRE_CUENTA"=$[$38.U_CL_PRE_CUENTA] ;
+END IF;
+IF MONTH (now()) ='10'
+THEN
+Select SUM("LineTotal") from POR1 where  "DocDate" BETWEEN '20181001' AND '20181031' AND "LineStatus"='O' and "U_CL_PRE_CUENTA"=$[$38.U_CL_PRE_CUENTA] ;
+END IF;
+IF MONTH (now()) ='11'
+THEN
+Select SUM("LineTotal") from POR1 where  "DocDate" BETWEEN '20181101' AND '20181130' AND "LineStatus"='O' and "U_CL_PRE_CUENTA"=$[$38.U_CL_PRE_CUENTA] ;
+END IF;
+IF MONTH (now()) ='12'
+THEN
+Select SUM("LineTotal") from POR1 where  "DocDate" BETWEEN '20181201' AND '20181231' AND "LineStatus"='O' and "U_CL_PRE_CUENTA"=$[$38.U_CL_PRE_CUENTA] ;
+END IF;

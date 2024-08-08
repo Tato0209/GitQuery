@@ -1,0 +1,13 @@
+/* SELECT FROM "OINM" T0 WHERE T0."DocDate" <= [%0] ;*/
+/* SELECT FROM "OITM" T1 WHERE T1."ItemCode" = '[%1]' AND T1."ItemType"<>'F' AND T1."InvntItem"='Y' ;*/
+CALL  "REPORTESTOCKALMACEN" ([%0],STOCKDEALMACEN) ;
+
+SELECT T1."ItemCode",T1."ItemName",T2."WhsCode",T2."WhsName",T0."CantidadAlmacen",T0."ValorAcumulado",T1."BuyUnitMsr" "UM Compras",T0."UltimoDocumentoIngreso",T0."NroUltimoIngreso","LineaUltimoIngreso",T0."FechaUltimoIngreso",T0."CantidadUltimoIngreso",T0."UltimoDocumentoConsumo",T0."NroUltimoConsumo",T0."LineaUltimoConsumo",T0."FechaUltimoConsumo",T0."CantidadUltimoConsumo",IFNULL(T8."Name",'') "Familia",
+IFNULL(T9."Name",'') "Subfamilia" ,T1."U_CL_CATEGORIA" "Categoria" FROM :STOCKDEALMACEN T0
+LEFT JOIN "OITM" T1 ON T0."ItemCode"=T1."ItemCode"
+LEFT JOIN "OWHS" T2 ON T0."WhsCode"=T2."WhsCode"
+LEFT OUTER JOIN "@CL_ODIV" T8 ON T1."U_CL_CODDIV"=T8."Code"
+LEFT  OUTER JOIN "@CL_OSDI" T9 ON T1."U_CL_CODLIN"=T9."Code"
+WHERE ( T1."ItemCode" = '[%1]' OR '[%1]' = '' ) AND (T2."WhsCode" = [%2] OR [%2] = '' )
+ORDER BY 1,3
+;

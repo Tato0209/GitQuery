@@ -1,0 +1,7 @@
+SELECT T0."DocEntry",T0."DocNum",T0."CreateDate",T0."DocDate",T0."NumAtCard",T0."CardCode",T0."CardName" ,
+T1."VisOrder"+1 "Linea",T1."ItemCode",T1."Dscription",T1."WhsCode",T1."Quantity",T0."DocCur",T1."Price",
+CASE WHEN T0."DocCur"='SOL' THEN T1."LineTotal" ELSE T1."TotalFrgn" END "TotalLinea",
+T1."OcrCode",T1."OcrCode2",T1."OcrCode3",T1."OcrCode4",T1."OcrCode4"
+FROM "OPDN" T0 INNER JOIN "PDN1" T1 ON T0."DocEntry"=T1."DocEntry"
+WHERE YEAR(T0."CreateDate") = 2021 AND T0."CANCELED"='N'
+ORDER BY T0."CreateDate" DESC,T0."DocNum" DESC ,T1."VisOrder" ASC

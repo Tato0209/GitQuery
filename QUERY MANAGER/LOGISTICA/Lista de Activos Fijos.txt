@@ -1,0 +1,10 @@
+SELECT T0."ItemCode",T0."ItemName",T0."CodeBars",T0."InventryNo",T0."AssetSerNo",
+T1."AttriTxt1",T1."AttriTxt2",T1."AttriDt43" ,
+T2."OcrCode",T2."OcrCode2",T2."OcrCode3",T2."OcrCode4",T2."OcrCode5",
+T3."APC"
+FROM "OITM" T0 INNER JOIN "ITM13" T1 ON T0."ItemCode"=T1."ItemCode"
+INNER JOIN "ITM6" T2 ON T0."ItemCode"=T2."ItemCode"
+INNER JOIN "ITM8" T3 ON T0."ItemCode"=T3."ItemCode" AND T3."PeriodCat"='2019' AND T3."DprArea"='F00001'
+WHERE
+-- T0."ItemCode"='33511.000222' AND 
+ T0."ItemType"='F' AND T0."validFor"='Y'

@@ -1,0 +1,9 @@
+SELECT T3."DocNum",CASE WHEN I1."ProcesStat"='P' THEN 'Creado' ELSE 'Pendiente' END "Estado",T0."DocDate" "Fecha de contabilización OC", I2."UpdateDate" "Fecha de Aprobación", T0."CardCode", T0."CardName",T0."DocCur",
+CASE WHEN T0."DocCur"='SOL' THEN  T0."DocTotal" ELSE  T0."DocTotalFC" END "Total", T0."Comments", T0."U_FLUJOC",T1."USER_CODE" "Código de Usuario Aprobador",T1."U_NAME" "Nombre de Usuario Aprobador"
+FROM  
+"OWDD" I1 
+INNER JOIN "WDD1" I2 ON I1."WddCode"=I2."WddCode"
+INNER JOIN "OUSR" T1 ON T1."USERID"=I2."UserID"
+INNER JOIN "ODRF" T0 ON I1."DraftEntry"=T0."DocEntry" AND  I1."ObjType"=22 
+LEFT OUTER JOIN "OPOR" T3 ON T3."draftKey"=T0."DocEntry"
+WHERE  T1."USER_CODE"='gerencia' AND (I2."UpdateDate" BETWEEN '[%0]' AND '[%1]' ) AND I2."Status"='Y'

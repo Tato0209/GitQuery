@@ -1,0 +1,1 @@
+SELECT MONTH (now())-1 FROM DUMMY

@@ -1,0 +1,72 @@
+SELECT 
+T0."DocNum" "N° OC",CASE WHEN T1."LineStatus"='O' THEN 'ABIERTO' ELSE 'CERRADO' END "Estado" ,T0."DocDate" "F. Contabilización",
+I1."CreateDate" "F. Registro Preliminar",
+T0."CreateDate" "F. Creación",
+T1."ShipDate" "F. Entrega",
+I2."U_NAME" "Usuario Compras",
+T0."CardCode" "Cod. Proveedor",I3."CardName" "Proveedor",
+T1."VisOrder"+1 "NroLinea",T1."ItemCode" "Cod. Articulo",T1."Dscription" "Articulo",
+T1."FreeTxt" "Texto Libre",
+CASE WHEN T1."Quantity"=0 THEN 1.0 ELSE T1."Quantity" END "Cantidad",
+T1."unitMsr", T0."DocCur" "Moneda",
+T0."SysRate"  "T/C" ,
+CASE WHEN T0."DocCur"='SOL' THEN T1."Price" ELSE T1."Price"*T0."SysRate" END "PU S/."
+,CASE WHEN T0."DocCur"='SOL' THEN T1."Price"/T0."SysRate"  ELSE T1."Price" END "PU $/.",
+CASE WHEN T0."DocCur"='SOL' THEN T1."LineTotal"  ELSE T1."Price"*T0."SysRate"*T1."Quantity" END  "SubTotal S/",
+CASE WHEN T0."DocCur"='SOL' THEN T1."Price"/T0."SysRate"*T1."Quantity"  ELSE  T1."TotalFrgn"  END "SubTotal $/",
+IFNULL(T8."Name",'') "FAMILIA",
+IFNULL(T9."Name",'') "SUBFAMILIA",
+CASE WHEN IFNULL(T7."InvntItem",'')='N' THEN (CASE WHEN IFNULL(T7."ItemType",'')<>'F' THEN 'SI' ELSE 'NO' END) ELSE 'NO' END "Servicio",
+CASE WHEN IFNULL(T7."ItemType",'')='F' THEN 'SI' ELSE 'NO' END "AF",
+T1."OcrCode" "CC1 Modelo Negocio",T1."OcrCode2" "CC2 Unidades",T1."OcrCode3" "CC3 Areas",T1."OcrCode4" "CC4 Labores",T1."OcrCode5" "CC5 Equipo",T1."Project",T1."AcctCode" "Cuenta de mayor",
+T2."PymntGroup" "Condicion Pago",IFNULL(SUM(T4."Quantity"),0) "Cantidad Total Entrada",IFNULL(MAX(T3."NumAtCard"),'') "Ultima Guia",IFNULL(MAX(T3."DocDate"),'') "Ultima Fecha Cont Ingreso",
+--CASE WHEN T3."DocCur"='SOL' THEN IFNULL(T4."Price",0)*IFNULL(T4."Quantity"),0) ELSE IFNULL(T4."Price",0)*IFNULL(T3."SysRate",1)*IFNULL(T4."Quantity",0) END  "Importe Ingresado S/."  ,
+CASE WHEN T3."DocCur"='SOL' THEN SUM(IFNULL(T4."Price",0)*IFNULL(T4."Quantity",0)) ELSE SUM(IFNULL(T4."Price",0)*IFNULL(T3."SysRate",1)*IFNULL(T4."Quantity",0)) END  "Importe Ingresado S/."  ,
+CASE WHEN T3."DocCur"='SOL' THEN SUM(IFNULL(T4."Price",0)/IFNULL(T3."SysRate",1)*IFNULL(T4."Quantity",0))  ELSE SUM(IFNULL(T4."Price",0)*IFNULL(T4."Quantity",0)) END   "Importe Ingresado $/.",
+IFNULL(MAX(T11."DocDate"),'') "Ultima Fecha Cont Servicio/AF",
+CASE WHEN T11."DocCur"='SOL' THEN SUM(IFNULL(T10."Price",0)*IFNULL(T10."Quantity",0)) ELSE SUM(IFNULL(T10."Price",0)*IFNULL(T11."SysRate",1)*IFNULL(T10."Quantity",0)) END "Valor Servicio/AF S/",
+CASE WHEN T11."DocCur"='SOL' THEN SUM(IFNULL(T10."Price",0)/IFNULL(T11."SysRate",1)*IFNULL(T10."Quantity",0))  ELSE SUM(IFNULL(T10."Price",0)*IFNULL(T10."Quantity",0)) END "Valor Servicio/AF $/",
+
+T5."DocNum" "N° RQ",IFNULL(T6."Quantity",0) "Cantidad en RQ",T5."DocDate" "FechaRQ"
+ FROM "OPOR" T0 INNER JOIN "POR1" T1 ON T0."DocEntry"=T1."DocEntry"
+ LEFT JOIN "OCTG" T2 ON T0."GroupNum"=T2."GroupNum"
+ LEFT OUTER JOIN "PDN1" T4 ON  T4."BaseEntry"= T1."DocEntry" AND T4."BaseType"= 22 AND  T4."BaseLine"=T1."LineNum" AND (SELECT "CANCELED" FROM "OPDN" WHERE "DocEntry"=T4."DocEntry")<>'Y'
+ LEFT OUTER JOIN "OPDN" T3 ON T4."DocEntry" = T3."DocEntry"
+ LEFT OUTER JOIN "PRQ1" T6 ON T1."BaseEntry"= T6."DocEntry" AND T1."BaseType"= T6."ObjType" AND T1."BaseLine" = T6."LineNum"
+ LEFT OUTER JOIN "OPRQ" T5 ON T5."DocEntry"= T6."DocEntry" 
+ LEFT OUTER JOIN "PCH1" T10 ON T10."BaseEntry"= T1."DocEntry"  AND T10."BaseType"= 22  AND  T10."BaseLine"=T1."LineNum" AND (SELECT "CANCELED" FROM "OPCH" WHERE "DocEntry"=T10."DocEntry")<>'Y'
+ LEFT OUTER JOIN "OPCH" T11 ON T10."DocEntry"=T11."DocEntry"
+ 
+ LEFT JOIN "OITM" T7 ON T1."ItemCode"=T7."ItemCode"
+ LEFT JOIN "@CL_ODIV" T8 ON T7."U_CL_CODDIV"=T8."Code"
+ LEFT JOIN "@CL_OSDI" T9 ON T7."U_CL_CODLIN"=T9."Code"
+ LEFT JOIN "OWDD"  I1 ON  T0."DocEntry" = I1."DocEntry" AND I1."ObjType"=22
+LEFT JOIN  "OUSR" I2 ON I2."USERID"=I1."OwnerID"
+LEFT JOIN "OCRD" I3 ON T0."CardCode"=I3."CardCode"
+WHERE 
+ 
+ T0."DocDate" >= '[%1]' AND T0."DocDate" <= '[%2]' 
+AND
+( I3."CardName" = '[%3]' or '[%3]' = '') 
+AND
+(T1."ItemCode" = '[%4]' or '[%4]' = '') 
+AND
+(T0."DocNum"  = '[%5]' or '[%5]' = 0) 
+AND
+ T0."CANCELED"='N' 
+GROUP BY 
+
+T0."DocNum",T1."LineStatus",T0."DocDate",T0."TaxDate",T1."ShipDate",T0."CardCode",I3."CardName",
+T1."VisOrder"+1 ,T1."ItemCode",T1."Dscription",T1."FreeTxt",T1."Quantity",T1."AcctCode"
+,CASE WHEN T1."Quantity"=0 THEN 1.0 ELSE T1."Quantity" END,
+T1."unitMsr",CASE WHEN T0."DocCur"='SOL' THEN T1."Price" ELSE T1."Price"*T0."DocRate" END
+,CASE WHEN T0."DocCur"='SOL' THEN T1."Price"/T0."DocRate" ELSE T1."Price" END ,T1."LineTotal",
+T1."TotalFrgn" 
+,T0."DocCur" 
+,T2."PymntGroup"
+,T3."CANCELED",T5."CANCELED"
+,T7."InvntItem",T7."ItemType"
+,T1."OcrCode",T1."OcrCode2",T1."OcrCode3",T1."OcrCode4",T1."OcrCode5" ,T1."Project",T8."Name",T1."Price",T0."SysRate",T9."Name",T5."DocNum",T6."Quantity",T11."CANCELED",T3."DocCur",T11."DocCur",
+I1."CreateDate" ,
+T0."CreateDate"  ,I2."U_NAME",T5."DocDate"
+ORDER BY 1,3,10

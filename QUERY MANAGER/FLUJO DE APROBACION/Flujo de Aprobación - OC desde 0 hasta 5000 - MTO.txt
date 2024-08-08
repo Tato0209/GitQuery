@@ -1,0 +1,6 @@
+if  ( $[OPOR.DocTotal] <= 5000.00 AND  $[OPOR.U_FLUJOC]='MTO')
+then
+select 'TRUE' from DUMMY;
+else
+select 'FALSE' from DUMMY;
+END IF;

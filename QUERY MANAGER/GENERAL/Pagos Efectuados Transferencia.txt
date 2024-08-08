@@ -1,0 +1,66 @@
+SELECT 
+ T0."DocNum", T0."CardName",T0."DocDate",T0."PrjCode",T0."DocCurr",T0."TrsfrAcct",
+ CASE WHEN T0."DocCurr"='SOL' THEN T0."TrsfrSum" ELSE T0."TrsfrSumFC" END "ImporteTransferencia",
+T0."DocType" "TipoPago",T1."AcctCode" "Cuenta",T1."SumApplied" "Monto SOL",T1."AppliedFC" "Monto USD",'SINSERIE' "Serie",'SINNUMERO' "Correlativo",T0."Comments"
+,IFNULL(T0."U_CL_MAESTROPAGO",'') "Tipo Gasto"
+ FROM "OVPM" T0
+INNER JOIN "VPM4" T1 ON T0."DocEntry"=T1."DocNum" 
+WHERE 
+IFNULL(T0."TrsfrAcct",'') LIKE '1%'
+AND T0."DocDate">=[%0] AND T0."DocDate"<=[%1]
+AND T0."Canceled"='N'
+--
+UNION ALL
+
+SELECT 
+ T0."DocNum",T0."CardName",T0."DocDate",T0."PrjCode",T0."DocCurr",T0."TrsfrAcct",
+CASE WHEN T0."DocCurr"='SOL' THEN T0."TrsfrSum" ELSE T0."TrsfrSumFC" END "ImporteTransferencia",
+ T0."DocType",MAX(T2."AcctCode"),T1."SumApplied",T1."AppliedFC",T3."U_BPP_MDSD",T3."U_BPP_MDCD",T0."Comments"
+ ,IFNULL(T0."U_CL_MAESTROPAGO",'') "Tipo Gasto"
+FROM "OVPM" T0
+INNER JOIN "VPM2" T1 ON T0."DocEntry"=T1."DocNum" 
+LEFT JOIN "PCH1" T2 ON T1."baseAbs"=T2."DocEntry" AND T1."InvType"='18'
+INNER JOIN "OPCH" T3 ON T2."DocEntry"=T3."DocEntry"
+WHERE 
+IFNULL(T0."TrsfrAcct",'') LIKE '1%'
+--AND T0."DocNum"='56578'
+AND T0."DocDate">=[%0] AND T0."DocDate"<=[%1]
+AND T0."Canceled"='N' AND T3."DocType"='S'
+GROUP BY T0."DocNum",T0."DocDate",T0."DocCurr",T0."TrsfrAcct",T0."TrsfrSum",T0."TrsfrSumFC",T0."DocType",T1."SumApplied",T1."AppliedFC",T3."U_BPP_MDSD",T3."U_BPP_MDCD",T0."Comments",T0."PrjCode"
+ ,T3."U_BPP_MDSD",T3."U_BPP_MDCD",T0."CardName",T0."U_CL_MAESTROPAGO"
+  
+ UNION ALL
+  
+ SELECT 
+ T0."DocNum",T0."CardName",T0."DocDate",T0."PrjCode",T0."DocCurr",T0."TrsfrAcct",
+ CASE WHEN T0."DocCurr"='SOL' THEN T0."TrsfrSum" ELSE T0."TrsfrSumFC" END "ImporteTransferencia",
+ T0."DocType",T3."CtlAccount",T1."SumApplied",T1."AppliedFC",T3."U_BPP_MDSD",T3."U_BPP_MDCD",T0."Comments"
+ ,IFNULL(T0."U_CL_MAESTROPAGO",'') "Tipo Gasto"
+FROM "OVPM" T0
+INNER JOIN "VPM2" T1 ON T0."DocEntry"=T1."DocNum" 
+--LEFT JOIN "PCH1" T2 ON T1."baseAbs"=T2."DocEntry" AND T1."InvType"='18'
+LEFT JOIN "OPCH" T3 ON T1."baseAbs"=T3."DocEntry"  AND T1."InvType"='18'
+WHERE 
+IFNULL(T0."TrsfrAcct",'') LIKE '1%'
+--AND T0."DocNum"='56578'
+AND T0."DocDate">=[%0] AND T0."DocDate"<=[%1]
+AND T0."Canceled"='N' AND T3."DocType"='I'
+--GROUP BY T0."DocNum",T0."DocDate",T0."DocCurr",T0."TrsfrAcct",T0."TrsfrSum",T0."TrsfrSumFC",T0."DocType",T1."SumApplied",T1."AppliedFC",T3."U_BPP_MDSD",T3."U_BPP_MDCD",T0."Comments"
+-- ,T3."U_BPP_MDSD",T3."U_BPP_MDCD"
+UNION ALL
+
+
+SELECT 
+ T0."DocNum",T0."CardName",T0."DocDate",T0."PrjCode",T0."DocCurr",T0."TrsfrAcct",
+ CASE WHEN T0."DocCurr"='SOL' THEN T0."TrsfrSum" ELSE T0."TrsfrSumFC" END "ImporteTransferencia",
+ T0."DocType",T3."Account",T1."SumApplied",T1."AppliedFC",T3."U_VS_NUMEROLTR",'SINNUMERO',T0."Comments"
+ ,IFNULL(T0."U_CL_MAESTROPAGO",'') "Tipo Gasto"
+FROM "OVPM" T0
+INNER JOIN "VPM2" T1 ON T0."DocEntry"=T1."DocNum" 
+--LEFT JOIN "PCH1" T2 ON T1."baseAbs"=T2."DocEntry" AND T1."InvType"='18'
+LEFT JOIN "JDT1" T3 ON T1."baseAbs"=T3."TransId"  AND T1."InvType"='30'
+WHERE 
+IFNULL(T0."TrsfrAcct",'') LIKE '1%' AND T3."U_VS_ESLETRA"='SI'
+--AND T0."DocNum"='56578'
+AND T0."DocDate">=[%0] AND T0."DocDate"<=[%1]
+AND T0."Canceled"='N'

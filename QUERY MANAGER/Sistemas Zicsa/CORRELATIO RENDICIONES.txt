@@ -1,0 +1,1 @@
+SELECT Concat('R', LEFT ($[OVPM.PrjCode],2)) || $[OVPM.DocNum] FROM DUMMY

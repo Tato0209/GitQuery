@@ -1,0 +1,4 @@
+IF LEFT($[OCRD.LicTradNum],1)='1'
+THEN
+SELECT LEFT ($[OCRD.CardName],LOCATE ($[OCRD.CardName], '  '),10 ) FROM DUMMY;
+END IF;

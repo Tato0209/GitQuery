@@ -1,0 +1,17 @@
+SELECT T0."CardCode",T0."CardName",
+CASE T0."U_BPP_BPTD" 
+WHEN 0 THEN 'OTRO DOCUMENTO' 
+WHEN 1 THEN 'DNI' 
+WHEN 4 THEN 'CARNET DE EXTRANJERIA' 
+WHEN 6 THEN 'RUC' 
+WHEN 7 THEN 'PASAPORTE' 
+END "Tipo Documento",
+T0."LicTradNum" "RUC/DNI",
+T0."E_Mail",T0."Address" "Dirección",T1."Name" "Nombre Contacto",
+T1."Tel1" "Telefono1 Contacto",T1."Tel2" "Telefono2 Contacto",T1."E_MailL" "Correo Contacto",
+T2."BankCode" "Codigo Banco",T2."Branch" "Moneda Cuenta",T2."Account" "Cuenta Banco",T2."AcctName" "Nombre Cuenta"
+ FROM "OCRD" T0
+LEFT OUTER JOIN "OCPR" T1 ON T0."CardCode" = T1."CardCode"
+LEFT OUTER JOIN "OCRB" T2 ON T0."CardCode" = T2."CardCode"
+WHERE T0."CardType"='C' AND IFNULL(T1."CntctCode",0)=(SELECT IFNULL(MIN("CntctCode"),0)FROM "OCPR" WHERE "CardCode"=T0."CardCode")
+AND IFNULL(T2."AbsEntry",0)=(SELECT IFNULL(MAX("AbsEntry"),0)FROM "OCRB" WHERE "CardCode"=T0."CardCode")

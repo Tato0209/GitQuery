@@ -1,0 +1,53 @@
+IF $[$38.2004.1]='ALQUILER' AND $[$38.2003.1]='CHIPMO' AND $[$38.2002.1]='ADPRO'
+THEN
+SELECT SUM("DebLTotal") FROM BGT1 WHERE "AcctCode"=$[$38.U_CL_PRE_CUENTA] and "Instance"=3 and "Line_ID"<=$[$38.U_CL_PRE_MES.1];
+END IF;
+
+IF $[$38.2004.1]='ALQUILER' AND $[$38.2003.1]='CHIPMO' AND $[$38.2002.1]='ALMAC'
+THEN
+SELECT SUM("DebLTotal") FROM BGT1 WHERE "AcctCode"=$[$38.U_CL_PRE_CUENTA] and "Instance"=4 and "Line_ID"<=$[$38.U_CL_PRE_MES.1];
+END IF;
+
+IF $[$38.2004.1]='ALQUILER' AND $[$38.2003.1]='CHIPMO' AND $[$38.2002.1]='MANT'
+THEN
+SELECT SUM("DebLTotal") FROM BGT1 WHERE "AcctCode"=$[$38.U_CL_PRE_CUENTA] and "Instance"=5 and "Line_ID"<=$[$38.U_CL_PRE_MES.1];
+END IF;
+
+IF $[$38.2004.1]='ALQUILER' AND $[$38.2003.1]='CHIPMO' AND $[$38.2002.1]='OPERAC'
+THEN
+SELECT SUM("DebLTotal") FROM BGT1 WHERE "AcctCode"=$[$38.U_CL_PRE_CUENTA] and "Instance"=6 and "Line_ID"<=$[$38.U_CL_PRE_MES.1];
+END IF;
+
+
+IF $[$38.2004.1]='ALQUILER' AND $[$38.2003.1]='CHIPMO' AND $[$38.2002.1]='SEGURID'
+THEN
+SELECT SUM("DebLTotal") FROM BGT1 WHERE "AcctCode"=$[$38.U_CL_PRE_CUENTA] and "Instance"=7 and "Line_ID"<=$[$38.U_CL_PRE_MES.1];
+END IF;
+
+IF $[$38.2004.1]='L-MINERA' AND $[$38.2003.1]='INMAC' AND $[$38.2002.1]='ADPRO'
+THEN
+SELECT SUM("DebLTotal") FROM BGT1 WHERE "AcctCode"=$[$38.U_CL_PRE_CUENTA] and "Instance"=8 and "Line_ID"<=$[$38.U_CL_PRE_MES.1];
+END IF;
+
+IF $[$38.2004.1]='L-MINERA' AND $[$38.2003.1]='INMAC' AND $[$38.2002.1]='ALMAC'
+THEN
+SELECT SUM("DebLTotal") FROM BGT1 WHERE "AcctCode"=$[$38.U_CL_PRE_CUENTA] and "Instance"=9 and "Line_ID"<=$[$38.U_CL_PRE_MES.1];
+END IF;
+
+
+IF $[$38.2004.1]='L-MINERA' AND $[$38.2003.1]='INMAC' AND $[$38.2002.1]='MANT'
+THEN
+SELECT SUM("DebLTotal") FROM BGT1 WHERE "AcctCode"=$[$38.U_CL_PRE_CUENTA] and "Instance"=10 and "Line_ID"<=$[$38.U_CL_PRE_MES.1];
+END IF;
+
+
+IF $[$38.2004.1]='L-MINERA' AND $[$38.2003.1]='INMAC' AND $[$38.2002.1]='SEGURID'
+THEN
+SELECT SUM("DebLTotal") FROM BGT1 WHERE "AcctCode"=$[$38.U_CL_PRE_CUENTA] and "Instance"=11 and "Line_ID"<=$[$38.U_CL_PRE_MES.1];
+END IF;
+
+
+IF $[$38.2004.1]='L-MINERA' AND $[$38.2003.1]='INMAC' AND $[$38.2002.1]='ALMAC'
+THEN
+SELECT SUM("DebLTotal") FROM BGT1 WHERE "AcctCode"=$[$38.U_CL_PRE_CUENTA] and "Instance"=12 and "Line_ID"<=$[$38.U_CL_PRE_MES.1];
+END IF;

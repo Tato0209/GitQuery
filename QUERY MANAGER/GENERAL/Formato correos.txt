@@ -1,0 +1,1 @@
+SELECT 'jportuguez@zicsa.com,rcarrasco@zicsa.com,emedina@zicsa.com,cgamarra@zicsa.com,msuyo@zicsa.com' FROM DUMMY

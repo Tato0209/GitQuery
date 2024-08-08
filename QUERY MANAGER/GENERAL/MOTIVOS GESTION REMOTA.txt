@@ -1,0 +1,2 @@
+SELECT T1."ItemCode", T1."ItemName", T0."ExpensesAc",T0."ItmsGrpNam" FROM OITB T0  INNER JOIN OITM T1 ON T0."ItmsGrpCod" = T1."ItmsGrpCod" 
+WHERE LEFT(T1."ItemCode",6)='013082'

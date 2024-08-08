@@ -1,0 +1,28 @@
+SELECT  T1."ItemCode", T1."Dscription", T1."WhsCode", T1."FreeTxt", T1."Quantity",T1."unitMsr", T1."Price",T1."LineTotal" AS "TotalLinea",
+ T1."OcrCode" "CC1", T1."OcrCode2" "CC2", T1."OcrCode3" "CC3", T1."OcrCode4" "CC4",T1."OcrCode5" "CC5",T1."Project",
+
+ T1."DocEntry" "Clave Base", TO_NVARCHAR(T1."LineNum") "Linea Base"
+,CASE WHEN T0."DocStatus"='O' THEN 'Abierto' ELSE 'Cerrado' END "Estado" ,
+(SELECT "CalcPrice" FROM OINM O1 WHERE O1."BASE_REF"=T0."DocNum" AND O1."DocLineNum"=T1."LineNum" AND "TransType"='20') as "Precio OINM",
+T0."DocDate",
+T0."DocNum",
+T0."NumAtCard",
+T1."BaseEntry" AS "KeyOC",
+(SELECT "DocNum" from OPOR WHERE "DocEntry"=T1."BaseEntry") AS "OC",
+(SELECT A1."U_NAME" FROM "OUSR" A1 INNER JOIN "OPOR" A2 ON  A1."USERID"= A2."UserSign" AND A2."DocEntry"=T1."BaseEntry") AS "Usuario",
+T0."DocCur" AS "Moneda",
+T0."CardName" AS "Proveedor",
+T0."U_VS_FECDESC" AS "Fecha Carga",
+T1."GTotal", 
+T1."GTotalFC",
+(SELECT "U_NAME" FROM "OUSR" WHERE "USERID"=T0."UserSign") AS "UsuarioEntrada",
+T0."U_VS_LGDESC" AS "Comentario Factura",
+T0."U_VS_FECTRAS" AS "Comentario Fecha Factura",
+T0."U_VS_NMEMB" AS "File"
+
+ FROM "OPDN" T0 
+INNER JOIN "PDN1" T1 ON T0."DocEntry"=T1."DocEntry"
+WHERE 
+T0."CANCELED"='N' AND T0."DocDate">=[%1] AND T0."DocDate"<= [%2]
+AND (T1."WhsCode" = [%3] OR [%3] = '' )
+ORDER BY T0."DocDate", T0."NumAtCard";

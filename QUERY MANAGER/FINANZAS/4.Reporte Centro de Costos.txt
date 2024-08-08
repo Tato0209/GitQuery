@@ -1,0 +1,2 @@
+SELECT T0."PrcCode", T0."PrcName" ,T1."DimDesc", T0."ValidFrom", T0."ValidTo", T0."Active"
+ FROM OPRC T0 INNER JOIN ODIM T1 ON T0."DimCode" = T1."DimCode"

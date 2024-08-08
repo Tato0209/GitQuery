@@ -1,0 +1,6 @@
+IF LEFT($[$38.1.0],3)<>'013'
+THEN
+SELECT T1."PurchaseAc" FROM OITM T0  INNER JOIN OITB T1 ON T0."ItmsGrpCod" = T1."ItmsGrpCod" AND T0."ItemCode"=$[$38.1.0];
+ELSE
+SELECT T1."ExpensesAc" FROM OITM T0  INNER JOIN OITB T1 ON T0."ItmsGrpCod" = T1."ItmsGrpCod" AND T0."ItemCode"=$[$38.1.0];
+END IF;

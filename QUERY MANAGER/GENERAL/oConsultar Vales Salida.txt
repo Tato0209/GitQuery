@@ -1,0 +1,1 @@
+SELECT T0."DocDate" AS  FECHA  , SUM(T1."PriceBefDi") AS TOTAL FROM OIGE T0  INNER JOIN IGE1 T1 ON T0."DocEntry" = T1."DocEntry" WHERE T0."DocDate"=[%0] GROUP BY T0."DocDate"

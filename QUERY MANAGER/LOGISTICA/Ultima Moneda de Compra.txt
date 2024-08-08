@@ -1,0 +1,1 @@
+SELECT T0."LastPurCur" FROM OITM T0 WHERE $[$38.1.0]=T0."ItemCode"

@@ -1,0 +1,32 @@
+SELECT T0."DocNum" "N° OC",CASE WHEN T0."DocStatus"='O' THEN 'ABIERTO' ELSE 'CERRADO' END "Estado" ,T0."DocDate" "F. Contabilización",
+T0."CardCode" "Cod. Proveedor",T0."CardName" "Proveedor",
+T1."VisOrder"+1 "NroLinea",T1."ItemCode" "Cod. Articulo",T1."Dscription" "Articulo",
+T1."FreeTxt" "Texto Libre",
+CASE WHEN T1."Quantity"=0 THEN 1.0 ELSE T1."Quantity" END "Cantidad",
+T1."unitMsr", T0."DocCur" "Moneda",
+T0."SysRate"  "T/C" ,
+CASE WHEN T0."DocCur"='SOL' THEN T1."Price" ELSE T1."Price"*T0."SysRate" END "PU S/."
+,CASE WHEN T0."DocCur"='SOL' THEN T1."Price"/T0."SysRate"  ELSE T1."Price" END "PU $/.",
+CASE WHEN T0."DocCur"='SOL' THEN T1."LineTotal"  ELSE T1."Price"*T0."SysRate"*T1."Quantity" END  "SubTotal S/",
+CASE WHEN T0."DocCur"='SOL' THEN T1."Price"/T0."SysRate"*T1."Quantity"  ELSE  T1."TotalFrgn"  END "SubTotal $/",
+--IFNULL(T8."Name",'') "FAMILIA",
+--IFNULL(T9."Name",'') "SUBFAMILIA",
+--CASE WHEN IFNULL(T7."InvntItem",'')='N' THEN (CASE WHEN IFNULL(T7."ItemType",'')<>'F' THEN 'SI' ELSE 'NO' END) ELSE 'NO' END "Servicio",
+--CASE WHEN IFNULL(T7."ItemType",'')='F' THEN 'SI' ELSE 'NO' END "AF",
+T1."OcrCode" "CC1 Modelo Negocio",T1."OcrCode2" "CC2 Unidades",T1."OcrCode3" "CC3 Areas",T1."OcrCode4" "CC4 Labores",T1."OcrCode5" "CC5 Equipo",T1."Project"
+,T1."U_CL_PRE_CUENTA" "Codigo Presupuesto",T1."AcctCode" "Cuenta Mayor"
+FROM "OPOR" T0 INNER JOIN "POR1" T1 ON T0."DocEntry"=T1."DocEntry"
+-- LEFT JOIN "OCTG" T2 ON T0."GroupNum"=T2."GroupNum"
+ --LEFT OUTER JOIN "PDN1" T4 ON  T4."BaseEntry"= T1."DocEntry" AND T4."BaseType"= 22 AND  T4."BaseLine"=T1."LineNum" AND (SELECT "CANCELED" FROM "OPDN" WHERE "DocEntry"=T4."DocEntry")<>'Y'
+ --LEFT OUTER JOIN "OPDN" T3 ON T4."DocEntry" = T3."DocEntry"
+ --LEFT OUTER JOIN "PRQ1" T6 ON T1."BaseEntry"= T6."DocEntry" AND T1."BaseType"= T6."ObjType" AND T1."BaseLine" = T6."LineNum"
+ --LEFT OUTER JOIN "OPRQ" T5 ON T5."DocEntry"= T6."DocEntry" 
+ --LEFT OUTER JOIN "PCH1" T10 ON T10."BaseEntry"= T1."DocEntry"  AND T10."BaseType"= 22  AND  T10."BaseLine"=T1."LineNum" AND (SELECT "CANCELED" FROM "OPCH" WHERE "DocEntry"=T10."DocEntry")<>'Y'
+ --LEFT OUTER JOIN "OPCH" T11 ON T10."DocEntry"=T11."DocEntry"
+ --LEFT JOIN "OITM" T7 ON T1."ItemCode"=T7."ItemCode"
+ --LEFT JOIN "@CL_ODIV" T8 ON T7."U_CL_CODDIV"=T8."Code"
+ --LEFT JOIN "@CL_OSDI" T9 ON T7."U_CL_CODLIN"=T9."Code"
+WHERE
+ T0."DocDate" >= '[%1]' AND T0."DocDate" <= '[%2]' 
+ AND 
+  T0."CANCELED"='N'

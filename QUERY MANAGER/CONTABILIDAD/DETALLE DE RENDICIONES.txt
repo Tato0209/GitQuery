@@ -1,0 +1,47 @@
+SELECT T0."DocNum",T0."NumAtCard" "NroLegal",T0."DocDate" "Fecha Contabilizacion",
+T0."DocDueDate" "Fecha Vencimiento",T0."TaxDate" "Fecha Documento"
+,T1."VisOrder"+1 "NroLinea",T0."CardCode",T0."CardName",
+T1."ItemCode",T1."Dscription",
+CASE WHEN T1."Quantity"=0 THEN 1.0 ELSE T1."Quantity" END "Cantidad",
+T1."unitMsr" "Unidad",T0."DocCur", T1."Price",
+T1."LineTotal" "TotalLineaSOL",T1."LineVat" "IGVLineaSOL",T1."LineTotal"+T1."LineVat" "TotalLineaconIGVSOL",
+T1."AcctCode",
+T1."OcrCode" "CC1 Modelo de Negocios",T1."OcrCode2" "CC2 Unidades",T1."OcrCode3" "CC3 Areas",T1."OcrCode4" "CC4 Labores",T1."OcrCode5" "CC5 Equipos",T1."Project",T0."Comments",T0."U_NUMER" "NroRendicion"
+,'Documento Sustentado'"Tipo de Operación"
+--,T0."U_NUMCC" "NroCaja"
+FROM "OPCH" T0 INNER JOIN "PCH1" T1 ON T0."DocEntry"=T1."DocEntry" 
+LEFT JOIN "OITM" T2 ON T1."ItemCode"=T2."ItemCode"
+WHERE T0."U_NUMER"='[%0]' AND T0."CANCELED"='N'
+
+UNION ALL
+
+SELECT T0."DocNum",'',T0."DocDate",T0."DocDueDate" "Fecha Vencimiento",T0."TaxDate" "Fecha Documento",
+T1."LineId"+1,'','',
+'','',NULL,'',T0."DocCurr",NULL,
+T1."SumApplied",0,T1."SumApplied",
+T1."AcctCode",
+T1."OcrCode" "CC1 Modelo de Negocios",T1."OcrCode2" "CC2 Unidades",T1."OcrCode3" "CC3 Areas",T1."OcrCode4" "CC4 Labores",T1."OcrCode5" "CC5 Equipos",T1."Project",
+T0."Comments",T0."U_NROOP" "NroRendicion",
+T2."Descr" "Tipo de Operación"
+--,T0."U_NROOP" "NroCaja"
+FROM "OVPM" T0
+INNER JOIN
+ "VPM4" T1 ON T0."DocEntry" = T1."DocNum" 
+ LEFT JOIN "UFD1" T2 ON T2."FldValue"=T0."U_CLASEOP"  AND  T2."TableID"='OVPM' AND T2."FieldID"=28 
+ WHERE T0."U_NROOP"='[%0]'  AND T0."Canceled"='N'
+ 
+ UNION ALL
+ 
+ SELECT T0."DocNum",'',T0."DocDate",T0."DocDueDate" "Fecha Vencimiento",T0."TaxDate" "Fecha Documento",
+T1."LineId"+1,'','',
+'','',NULL,'',T0."DocCurr",NULL,
+T1."SumApplied",0,T1."SumApplied",
+T1."AcctCode",
+T1."OcrCode" "CC1 Modelo de Negocios",T1."OcrCode2" "CC2 Unidades",T1."OcrCode3" "CC3 Areas",T1."OcrCode4" "CC4 Labores",T1."OcrCode5" "CC5 Equipos",T1."Project",
+T0."Comments",T0."U_NROOP" "NroRendicion",
+'Devolución' "Tipo de Operación"
+--,T0."U_NROOP" "NroCaja"
+FROM "ORCT" T0
+INNER JOIN
+ "RCT4" T1 ON T0."DocEntry" = T1."DocNum" 
+ WHERE T0."U_NROOP"='[%0]'  AND T0."Canceled"='N'

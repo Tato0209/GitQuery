@@ -1,0 +1,1 @@
+SELECT T0."ItemCode", T0."ItemName",T0."CapDate",  T1."APC",(SELECT "Rate" from ORTT WHERE "RateDate"=T0."CapDate") as "T/C" ,  T1."APCHist", T1."SalvageVal", T1."OrDpAcc1" FROM "SBO_ZICSA"."OITM"  T0 INNER JOIN "SBO_ZICSA"."ITM8"  T1 ON T0."ItemCode" = T1."ItemCode"

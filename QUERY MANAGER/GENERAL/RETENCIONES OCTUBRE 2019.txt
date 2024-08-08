@@ -1,0 +1,42 @@
+SELECT T2."LicTradNum",T2."CardName",T0."U_BPV_SERI",T0."U_BPV_NCON2",T0."DocDate",T0."TrsfrSum",'01' AS "Tipo",T3."U_BPP_MDSD",T3."U_BPP_MDCD" ,T3."DocDate",
+CASE WHEN T3."DocCur"='USD' THEN ROUND((T1."WtAppldFC"*T0."DocRate"),2)+T0."TrsfrSum" ELSE T3."DocTotal" END,
+CASE WHEN T1."InvType"='18' THEN 'FACTURA' ELSE 'LETRA' END
+FROM "OVPM" T0 INNER JOIN "VPM2" T1 ON T0."DocEntry" = T1."DocNum"
+
+INNER JOIN "OCRD" T2 ON T0."CardCode"=T2."CardCode"
+LEFT JOIN "OPCH" T3 ON T1."DocEntry"=T3."DocEntry"
+WHERE 
+T0."DocDate">='20191001' AND T0."DocDate"<='20191031'
+AND T0."U_VS_FESTAT"='R' AND
+T0."U_BPV_SERI"='R001-20'AND T0."U_BPV_NCON2"<>'00000082' AND T0."U_BPV_NCON2"<>'00000083'
+
+
+
+
+UNION ALL
+
+SELECT T2."LicTradNum",T2."CardName",'R001-20' "SERIE",'00000082' "Correlativo",T0."DocDate",T0."CashSum",'01' AS "Tipo",T3."U_BPP_MDSD",T3."U_BPP_MDCD" ,T3."DocDate",
+CASE WHEN T3."DocCur"='USD' THEN ROUND((T1."WtAppldFC"*T0."DocRate"),2)+T0."TrsfrSum" ELSE T3."DocTotal" END,
+CASE WHEN T1."InvType"='99' THEN 'FACTURA' ELSE 'LETRA' END
+FROM "OVPM" T0 INNER JOIN "VPM2" T1 ON T0."DocEntry" = T1."DocNum"
+
+INNER JOIN "OCRD" T2 ON T0."CardCode"=T2."CardCode"
+LEFT JOIN "OPCH" T3 ON T1."DocEntry"=T3."DocEntry"
+WHERE 
+--T0."DocDate">='20191001' AND T0."DocDate"<='20191031'
+--AND
+ T0."DocNum"='52006'
+
+UNION ALL
+
+SELECT T2."LicTradNum",T2."CardName",'R001-20' "SERIE",'00000083' "Correlativo",T0."DocDate",T0."CashSum",'01' AS "Tipo",T3."U_BPP_MDSD",T3."U_BPP_MDCD" ,T3."DocDate",
+CASE WHEN T3."DocCur"='USD' THEN ROUND((T1."WtAppldFC"*T0."DocRate"),2)+T0."TrsfrSum" ELSE T3."DocTotal" END,
+CASE WHEN T1."InvType"='99' THEN 'FACTURA' ELSE 'LETRA' END
+FROM "OVPM" T0 INNER JOIN "VPM2" T1 ON T0."DocEntry" = T1."DocNum"
+
+INNER JOIN "OCRD" T2 ON T0."CardCode"=T2."CardCode"
+LEFT JOIN "OPCH" T3 ON T1."DocEntry"=T3."DocEntry"
+WHERE 
+--T0."DocDate">='20191001' AND T0."DocDate"<='20191031'
+--AND 
+T0."DocNum"='52007'

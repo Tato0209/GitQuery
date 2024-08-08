@@ -1,0 +1,6 @@
+if  $[$38.2002.0]='MANT' OR  $[$38.2002.0] ='ALMAC'
+then
+select  'Y' from DUMMY;
+else
+select  'N' from DUMMY;
+END IF;

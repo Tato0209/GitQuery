@@ -1,0 +1,5 @@
+SELECT DISTINCT T0."DocEntry",T0."CardName",T0."NumAtCard",T0."DocDate",COUNT(DISTINCT T1."U_CL_PRE_CUENTA") "PartidasDistintas" FROM "OPOR" T0 INNER JOIN "POR1" T1 
+ON T0."DocEntry"=T1."DocEntry" 
+GROUP BY T0."DocEntry",T0."CardName",T0."NumAtCard",T0."DocDate"
+HAVING COUNT(DISTINCT T1."U_CL_PRE_CUENTA")>1 AND YEAR(T0."DocDate")='2023'
+ORDER BY T0."DocEntry" DESC

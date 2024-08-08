@@ -1,0 +1,6 @@
+if  $[OPRQ.U_FLUJOC]='MTO'
+then
+select 'TRUE' from DUMMY;
+else
+select 'FALSE' from DUMMY;
+END IF;

@@ -1,0 +1,82 @@
+SELECT T0."DocEntry" "IdFactura",T0."DocNum" "NroSAPFactura",T0."CardCode" "CodigoProveedor",T0."CardName" "Nombre Proveedor",
+T0."NumAtCard" "NroLegal",T0."DocDate" "Fecha Contabilizacion",
+T0."DocDueDate" "Fecha Vencimiento",T0."TaxDate" "Fecha Documento"
+,T1."VisOrder"+1 "NroLinea",T1."ItemCode",T1."Dscription",
+CASE WHEN IFNULL(T2."InvntItem",'')='N' THEN (CASE WHEN IFNULL(T2."ItemType",'')<>'F' THEN 'SI' ELSE 'NO' END) ELSE 'NO' END "Servicio",
+CASE WHEN IFNULL(T2."ItemType",'')='F' THEN 'SI' ELSE 'NO' END "AF",
+CASE WHEN T1."Quantity"=0 THEN 1.0 ELSE T1."Quantity" END "Quantity",
+T1."unitMsr" "Unidad",T0."DocCur",CASE WHEN T0."DocCur"='SOL' THEN T1."Price" ELSE T1."Price"*T0."DocRate" END "PrecioSOL",
+T1."LineTotal" "TotalLineaSOL",T1."LineVat" "IGVLineaSOL",T1."LineTotal"+T1."LineVat" "TotalLineaconIGVSOL",
+CASE WHEN T0."DocCur"='SOL' THEN 0 ELSE T1."Price" END "PrecioUSD",T1."TotalFrgn" "TotalLineaUSD",T1."LineVatlF" "IGVLineaUSD",
+T1."TotalFrgn"+T1."LineVatlF" "TotalLineaconIGVUSD",
+T1."AcctCode",
+T1."OcrCode" "CC1 Modelo de Negocios",T1."OcrCode2" "CC2 Unidades",T1."OcrCode3" "CC3 Areas",T1."OcrCode4" "CC4 Equipos",T1."Project",T0."Comments",T0."U_NUMER" "NroRendicion",
+T0."U_NUMCC" "NroCaja",
+NULL "DocEntryOC" , NULL "DocNumOC"
+,1 "TipoFactura"
+FROM "OPCH" T0 INNER JOIN "PCH1" T1 ON T0."DocEntry"=T1."DocEntry" 
+LEFT JOIN "OITM" T2 ON T1."ItemCode"=T2."ItemCode"
+WHERE 
+(T0."DocDate" BETWEEN [%0] AND [%1]) AND T1."BaseType"=-1
+AND T0."CANCELED"='N'
+
+UNION ALL
+
+-- FACTURA CON OC COMO DOCUMENTO BASE ---
+---
+
+SELECT T0."DocEntry" "IdFactura",T0."DocNum" "NroSAPFactura",T0."CardCode" "CodigoProveedor",T0."CardName" "Nombre Proveedor",
+T0."NumAtCard" "NroLegal",T0."DocDate" "Fecha Contabilizacion",
+T0."DocDueDate" "Fecha Vencimiento",T0."TaxDate" "Fecha Documento"
+,T1."VisOrder"+1 "NroLinea",T1."ItemCode",T1."Dscription",
+CASE WHEN IFNULL(T2."InvntItem",'')='N' THEN (CASE WHEN IFNULL(T2."ItemType",'')<>'F' THEN 'SI' ELSE 'NO' END) ELSE 'NO' END "Servicio",
+CASE WHEN IFNULL(T2."ItemType",'')='F' THEN 'SI' ELSE 'NO' END "AF",
+CASE WHEN T1."Quantity"=0 THEN 1.0 ELSE T1."Quantity" END "Quantity",
+T1."unitMsr" "Unidad",T0."DocCur",CASE WHEN T0."DocCur"='SOL' THEN T1."Price" ELSE T1."Price"*T0."DocRate" END "PrecioSOL",
+T1."LineTotal" "TotalLineaSOL",T1."LineVat" "IGVLineaSOL",T1."LineTotal"+T1."LineVat" "TotalLineaconIGVSOL",
+CASE WHEN T0."DocCur"='SOL' THEN 0 ELSE T1."Price" END "PrecioUSD",T1."TotalFrgn" "TotalLineaUSD",T1."LineVatlF" "IGVLineaUSD",
+T1."TotalFrgn"+T1."LineVatlF" "TotalLineaconIGVUSD",
+T1."AcctCode",
+T1."OcrCode",T1."OcrCode2",T1."OcrCode3",T1."OcrCode4",T1."Project",T0."Comments",T0."U_NUMER" "NroRendicion",
+T0."U_NUMCC" "NroCaja",
+T5."DocEntry" "DocEntryOC" , T5."DocNum" "DocNumOC"
+,2 "TipoFactura"
+FROM "OPCH" T0 INNER JOIN "PCH1" T1 ON T0."DocEntry"=T1."DocEntry" 
+INNER JOIN "POR1" T4 ON T1."BaseEntry"=T4."DocEntry" AND T1."BaseType"=22 AND T1."BaseLine" = T4."LineNum"
+LEFT JOIN "OPOR" T5 ON T4."DocEntry"=T5."DocEntry"
+LEFT JOIN "OITM" T2 ON T1."ItemCode"=T2."ItemCode"
+WHERE 
+--(T0."DocDate" BETWEEN FECHAINI AND FECHAFIN)
+(T0."DocDate" BETWEEN [%0] AND [%1]) 
+AND T0."CANCELED"='N'
+
+UNION ALL
+
+-- FACTURA CON ENTRADA DE MERCANCIAS Y OC COMO DOCUMENTOS BASES ---
+---
+SELECT T0."DocEntry" "IdFactura",T0."DocNum" "NroSAPFactura",T0."CardCode" "CodigoProveedor",T0."CardName" "Nombre Proveedor",
+T0."NumAtCard" "NroLegal",T0."DocDate" "Fecha Contabilizacion",
+T0."DocDueDate" "Fecha Vencimiento",T0."TaxDate" "Fecha Documento"
+,T1."VisOrder"+1 "NroLinea",T1."ItemCode",T1."Dscription",
+CASE WHEN IFNULL(T2."InvntItem",'')='N' THEN (CASE WHEN IFNULL(T2."ItemType",'')<>'F' THEN 'SI' ELSE 'NO' END) ELSE 'NO' END "Servicio",
+CASE WHEN IFNULL(T2."ItemType",'')='F' THEN 'SI' ELSE 'NO' END "AF",
+CASE WHEN T1."Quantity"=0 THEN 1.0 ELSE T1."Quantity" END "Quantity",
+T1."unitMsr" "Unidad",T0."DocCur",CASE WHEN T0."DocCur"='SOL' THEN T1."Price" ELSE T1."Price"*T0."DocRate" END "PrecioSOL",
+T1."LineTotal" "TotalLineaSOL",T1."LineVat" "IGVLineaSOL",T1."LineTotal"+T1."LineVat" "TotalLineaconIGVSOL",
+CASE WHEN T0."DocCur"='SOL' THEN 0 ELSE T1."Price" END "PrecioUSD",T1."TotalFrgn" "TotalLineaUSD",T1."LineVatlF" "IGVLineaUSD",
+T1."TotalFrgn"+T1."LineVatlF" "TotalLineaconIGVUSD",
+T1."AcctCode",
+T1."OcrCode",T1."OcrCode2",T1."OcrCode3",T1."OcrCode4",T1."Project",T0."Comments",T0."U_NUMER" "NroRendicion",
+T0."U_NUMCC" "NroCaja",
+T5."DocEntry" "DocEntryOC" , T5."DocNum" "DocNumOC"
+,3 "TipoFactura"
+FROM "OPCH" T0 INNER JOIN "PCH1" T1 ON T0."DocEntry"=T1."DocEntry" 
+INNER JOIN "PDN1" T3 ON T1."BaseEntry"=T3."DocEntry" AND T1."BaseType"= 20 AND T1."BaseLine" = T3."LineNum"
+LEFT OUTER JOIN "POR1" T4 ON T3."BaseEntry"=T4."DocEntry" AND T3."BaseType"= T4."ObjType" AND T3."BaseLine" = T4."LineNum"
+--LEFT OUTER JOIN "POR1" T5 ON T1."BaseEntry"=T5."DocEntry" AND T1."BaseType"= T5."ObjType" AND T1."BaseLine" = T5."LineNum"
+LEFT JOIN "OPOR" T5 ON T4."DocEntry"=T5."DocEntry"
+LEFT JOIN "OITM" T2 ON T1."ItemCode"=T2."ItemCode"
+WHERE 
+--T0."DocDate" BETWEEN FECHAINI AND FECHAFIN
+(T0."DocDate" BETWEEN [%0] AND [%1]) 
+AND T0."CANCELED"='N'

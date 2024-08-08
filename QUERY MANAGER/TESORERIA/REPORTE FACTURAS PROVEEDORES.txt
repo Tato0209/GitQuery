@@ -1,0 +1,18 @@
+--WHERE T0."DocDate" between '[%0]' and '[%1]'  and T0."CardName" ='[%2]'
+SELECT    T0."DocEntry", T0."DocNum", T0."DocDate" ,T0."DocDueDate" ,T0."TaxDate",
+           CASE WHEN T0."DocStatus" ='O' THEN 'Abierto'
+           WHEN T0."DocStatus" ='C' THEN 'Cerrado'
+           else 'Otros'end as "Estado",
+           T0."CardCode",T1."LicTradNum" as "Ruc",  T0."CardName",T0."DocCur" ,
+           
+           CASE WHEN T0."DocCur"  ='USD' THEN T0."DocTotalFC"
+                WHEN T0."DocCur"  ='SOL' THEN T0."DocTotal"
+           else T0."DocTotal" end as "Monto Total",
+           
+            T0."Comments" AS "Comentario",
+           T0."U_BPP_MDSD"  as "Serie", T0."U_BPP_MDCD" AS "Correlarivo" 
+FROM OPCH T0 
+INNER JOIN OCRD T1 ON T0."CardCode" = T1."CardCode"
+WHERE T0."DocDate" between '[%0]' and '[%1]'  and T0."CardName" ='[%2]'
+and T0."CANCELED"='N'
+order by T0."DocDate"  desc

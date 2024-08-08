@@ -1,0 +1,270 @@
+SELECT T1."VisOrder"+1 "Nro Linea",T1."ItemCode" "Código Articulo",T2."ItemName" "Artículo",T1."Quantity" "Cantidad",T1."unitMsr" "Unidad",
+CASE WHEN T0."DocCur"='SOL' THEN T1."Price" ELSE T1."Price"*T0."SysRate" END "PU S/.",
+--,CASE WHEN T0."DocCur"='SOL' THEN T1."Price"/T0."SysRate"  ELSE T1."Price" END "PU $/.",
+CASE WHEN T0."DocCur"='SOL' THEN T1."LineTotal"  ELSE T1."Price"*T0."SysRate"*T1."Quantity" END  "SubTotal S/",
+--CASE WHEN T0."DocCur"='SOL' THEN T1."Price"/T0."SysRate"*T1."Quantity"  ELSE  T1."TotalFrgn"  END "SubTotal $/",
+T0."DocDate" "Fecha Cont.",T0."TaxDate" "Fecha Documento",T1."WhsCode" "Almacén",'' "Vale",
+'NOTA DE INGRESO' "Documento",'INGRESO' "Tipo Documento",
+T0."DocNum" "Nro Documento" ,IFNULL(T3."Name",'') "Familia",
+IFNULL(T4."Name",'') "Subfamilia",
+T1."OcrCode" "CC1 Modelo Negocio",T1."OcrCode2" "CC2 Unidades",T1."OcrCode3" "CC3 Areas",T1."OcrCode4" "CC4 Labores",
+T1."OcrCode5" "CC5 Equipo",T1."Project" "Proyecto",
+'' "Solicitante",'' "Responsable",
+T6."DocNum",T6."CardCode",T6."CardName"
+,CASE WHEN T6."DocCur"='SOL' THEN T5."Price" ELSE T5."Price"*T6."SysRate" END "PU S/."
+,CASE WHEN T6."DocCur"='SOL' THEN T5."Price"/T6."SysRate"  ELSE T5."Price" END "PU $/."
+,T6."DocCur" "Moneda",T7."PymntGroup" "Condicion Pago"
+FROM "OPDN" T0 INNER JOIN "PDN1" T1 ON T0."DocEntry"=T1."DocEntry"
+LEFT JOIN "OITM" T2 ON T1."ItemCode"=T2."ItemCode"
+LEFT JOIN "@CL_ODIV" T3 ON T2."U_CL_CODDIV"=T3."Code"
+LEFT JOIN "@CL_OSDI" T4 ON T2."U_CL_CODLIN"=T4."Code"
+LEFT OUTER JOIN "POR1" T5 ON T1."BaseEntry"= T5."DocEntry" AND T1."BaseType"= T5."ObjType" AND T1."BaseLine" = T5."LineNum"
+LEFT OUTER JOIN "OPOR" T6 ON T5."DocEntry"=T6."DocEntry"
+LEFT JOIN "OCTG" T7 ON T6."GroupNum"=T7."GroupNum"
+WHERE IFNULL(T0."CANCELED",'')='N' AND IFNULL(T2."ItemType",'')<>'F' AND IFNULL(T2."InvntItem",'')='Y'
+AND T0."DocDate" >= [%0] AND T0."DocDate" <= [%1]
+AND (T1."WhsCode" = '[%3]' or '[%3]' = '')
+AND (T1."ItemCode" = '[%4]' or '[%4]' = '')
+
+
+UNION ALL
+(SELECT 
+L1."VisOrder"+1 "Nro Linea",L1."ItemCode" "Código Articulo",L2."ItemName" "Artículo",L1."Quantity"*-1 "Cantidad",L1."unitMsr" "Unidad",
+L5."CalcPrice",L5."TransValue",
+L0."DocDate" "Fecha Cont.",L0."TaxDate" "Fecha Documento",L1."WhsCode" "Almacén",L1."U_VS_DOCSAP" "Vale",
+'CONSUMO' "Documento",'SALIDA' "Tipo Documento",
+L0."DocNum" "Nro Documento" ,IFNULL(L3."Name",'') "Familia",
+IFNULL(L4."Name",'') "Subfamilia",
+L1."OcrCode" "CC1 Modelo Negocio",L1."OcrCode2" "CC2 Unidades",L1."OcrCode3" "CC3 Areas",L1."OcrCode4" "CC4 Labores",
+L1."OcrCode5" "CC5 Equipo",L1."Project" "Proyecto",
+L1."U_VS_SERDOC" "Solicitante",L0."Ref2" "Responsable",
+NULL,NULL,NULL,NULL,NULL,NULL,NULL
+FROM
+"OIGE" L0 INNER JOIN "IGE1" L1 ON L0."DocEntry"=L1."DocEntry"
+INNER JOIN "OWHS" L6 ON L1."WhsCode"=L6."WhsCode"
+LEFT JOIN "OITM" L2 ON L1."ItemCode"=L2."ItemCode"
+LEFT JOIN "@CL_ODIV" L3 ON L2."U_CL_CODDIV"=L3."Code"
+LEFT JOIN "@CL_OSDI" L4 ON L2."U_CL_CODLIN"=L4."Code"
+INNER JOIN "OINM" L5 ON L5."TransType"=60 AND L5."CreatedBy"=L1."DocEntry" AND L5."DocLineNum"=L1."LineNum"
+WHERE 
+(	L0."DocDate" >= [%0]  AND L0."DocDate" <= [%1] AND (L1."WhsCode" = '[%3]' or '[%3]' = '') AND (L1."ItemCode" = '[%4]' or '[%4]' = '' AND  IFNULL(L6."U_BPP_TIPOWSH",'')='00') 
+	OR 
+	( IFNULL(L6."U_BPP_TIPOWSH",'')<>'00' AND L1."FinncPriod"=(SELECT "AbsEntry" FROM "OFPR" WHERE "F_RefDate"<=CURRENT_DATE AND CURRENT_DATE<="T_RefDate") )
+)
+
+)
+
+UNION ALL
+
+SELECT W1."VisOrder"+1 "Nro Linea",W1."ItemCode" "Código Articulo",W2."ItemName" "Artículo",W1."Quantity" "Cantidad",W1."unitMsr" "Unidad",
+W5."CalcPrice",W5."TransValue",
+W0."DocDate" "Fecha Cont.",W0."TaxDate" "Fecha Documento",W1."WhsCode" "Almacén",'' "Vale",
+'TRANSFERENCIA INGRESO' "Documento",'INGRESO' "Tipo de Documento",
+W0."DocNum" "Nro Documento" ,IFNULL(W3."Name",'') "Familia",
+IFNULL(W4."Name",'') "Subfamilia",
+W1."OcrCode" "CC1 Modelo Negocio",W1."OcrCode2" "CC2 Unidades",W1."OcrCode3" "CC3 Areas",W1."OcrCode4" "CC4 Labores",
+W1."OcrCode5" "CC5 Equipo",W1."Project" "Proyecto",
+'' "Solicitante",'' "Responsable",
+NULL,NULL,NULL,NULL,NULL,NULL,NULL
+FROM "WTR1" W1 LEFT JOIN "OWTR" W0 ON W0."DocEntry"=W1."DocEntry"
+LEFT JOIN "OITM" W2 ON W1."ItemCode"=W2."ItemCode"
+LEFT JOIN "@CL_ODIV" W3 ON W2."U_CL_CODDIV"=W3."Code"
+LEFT JOIN "@CL_OSDI" W4 ON W2."U_CL_CODLIN"=W4."Code"
+INNER JOIN "OINM" W5 ON W5."TransType"=67 AND W5."CreatedBy"=W1."DocEntry" AND W5."DocLineNum"=W1."LineNum" AND W1."WhsCode"=W5."Warehouse"
+WHERE 
+W0."DocDate" >= [%0] AND W0."DocDate" <= [%1] AND (W1."WhsCode" = '[%3]' or '[%3]' = '')
+AND (W1."ItemCode" = '[%4]' or '[%4]' = '')
+
+
+UNION ALL
+SELECT W1."VisOrder"+1 "Nro Linea",W1."ItemCode" "Código Articulo",W2."ItemName" "Artículo",W1."Quantity"*-1 "Cantidad",W1."unitMsr" "Unidad",
+W5."CalcPrice",W5."TransValue",
+W0."DocDate" "Fecha Cont.",W0."TaxDate" "Fecha Documento",W1."FromWhsCod" "Almacén",'' "Vale",
+'TRANSFERENCIA SALIDA' "Documento",'SALIDA' "Tipo de Documento",
+W0."DocNum" "Nro Documento" ,IFNULL(W3."Name",'') "Familia",
+IFNULL(W4."Name",'') "Subfamilia",
+W1."OcrCode" "CC1 Modelo Negocio",W1."OcrCode2" "CC2 Unidades",W1."OcrCode3" "CC3 Areas",W1."OcrCode4" "CC4 Labores",
+W1."OcrCode5" "CC5 Equipo",W1."Project" "Proyecto",
+'' "Solicitante",'' "Responsable",
+NULL,NULL,NULL,NULL,NULL,NULL,NULL
+FROM "WTR1" W1 LEFT JOIN "OWTR" W0 ON W0."DocEntry"=W1."DocEntry"
+LEFT JOIN "OITM" W2 ON W1."ItemCode"=W2."ItemCode"
+LEFT JOIN "@CL_ODIV" W3 ON W2."U_CL_CODDIV"=W3."Code"
+LEFT JOIN "@CL_OSDI" W4 ON W2."U_CL_CODLIN"=W4."Code"
+INNER JOIN "OINM" W5 ON W5."TransType"=67 AND W5."CreatedBy"=W1."DocEntry" AND W5."DocLineNum"=W1."LineNum" AND W5."Warehouse"=W1."FromWhsCod"
+WHERE 
+W0."DocDate" >= [%0] AND W0."DocDate" <= [%1] AND  (W1."FromWhsCod" = '[%3]' or '[%3]' = '')
+AND (W1."ItemCode" = '[%4]' or '[%4]' = '') 
+
+
+UNION ALL
+SELECT 
+P1."VisOrder"+1 "Nro Linea",P1."ItemCode" "Código Articulo",P2."ItemName" "Artículo",P1."Quantity"*-1 "Cantidad",P1."unitMsr" "Unidad",
+P5."CalcPrice",P5."TransValue",
+P0."DocDate" "Fecha Cont.",P0."TaxDate" "Fecha Documento",P1."WhsCode" "Almacén",'' "Vale",
+'DEVOLUCIÓN COMPRAS' "Documento",'SALIDA' "Tipo de Documento",
+P0."DocNum" "Nro Documento" ,IFNULL(P3."Name",'') "Familia",
+IFNULL(P4."Name",'') "Subfamilia",
+P1."OcrCode" "CC1 Modelo Negocio",P1."OcrCode2" "CC2 Unidades",P1."OcrCode3" "CC3 Areas",P1."OcrCode4" "CC4 Labores",
+P1."OcrCode5" "CC5 Equipo",P1."Project" "Proyecto",
+'' "Solicitante",'' "Responsable",
+NULL,NULL,NULL,NULL,NULL,NULL,NULL
+FROM
+"RPD1" P1 LEFT JOIN "ORPD" P0 ON P0."DocEntry"=P1."DocEntry"
+LEFT JOIN "OITM" P2 ON P1."ItemCode"=P2."ItemCode"
+LEFT JOIN "@CL_ODIV" P3 ON P2."U_CL_CODDIV"=P3."Code"
+LEFT JOIN "@CL_OSDI" P4 ON P2."U_CL_CODLIN"=P4."Code"
+INNER JOIN "OINM" P5 ON P5."TransType"=21 AND P5."CreatedBy"=P1."DocEntry" AND P5."DocLineNum"=P1."LineNum"
+WHERE IFNULL(P0."CANCELED",'')='N' AND  IFNULL(P2."ItemType",'')<>'F' AND IFNULL(P2."InvntItem",'')='Y' AND
+P0."DocDate" >= [%0] AND P0."DocDate" <= [%1] AND (P1."WhsCode" = '[%3]' or '[%3]' = '')
+AND (P1."ItemCode" = '[%4]' or '[%4]' = '') 
+
+UNION ALL
+(SELECT 
+L1."VisOrder"+1 "Nro Linea",L1."ItemCode" "Código Articulo",L2."ItemName" "Artículo",L1."Quantity" "Cantidad",L1."unitMsr" "Unidad",
+L5."CalcPrice",L5."TransValue",
+L0."DocDate" "Fecha Cont.",L0."TaxDate" "Fecha Documento",L1."WhsCode" "Almacén",L1."U_VS_DOCSAP" "Vale",
+'ENTRADA MANUAL INVENTARIO' "Documento",'INGRESO' "Tipo de Documento",
+L0."DocNum" "Nro Documento" ,IFNULL(L3."Name",'') "Familia",
+IFNULL(L4."Name",'') "Subfamilia",
+L1."OcrCode" "CC1 Modelo Negocio",L1."OcrCode2" "CC2 Unidades",L1."OcrCode3" "CC3 Areas",L1."OcrCode4" "CC4 Labores",
+L1."OcrCode5" "CC5 Equipo",L1."Project" "Proyecto",
+L1."U_VS_SERDOC" "Solicitante",L0."Ref2" "Responsable",
+NULL,NULL,NULL,NULL,NULL,NULL,NULL
+FROM
+"OIGN" L0 INNER JOIN "IGN1" L1 ON L0."DocEntry"=L1."DocEntry"
+INNER JOIN "OWHS" L6 ON L1."WhsCode"=L6."WhsCode"
+LEFT JOIN "OITM" L2 ON L1."ItemCode"=L2."ItemCode"
+LEFT JOIN "@CL_ODIV" L3 ON L2."U_CL_CODDIV"=L3."Code"
+LEFT JOIN "@CL_OSDI" L4 ON L2."U_CL_CODLIN"=L4."Code"
+INNER JOIN "OINM" L5 ON L5."TransType"=59 AND L5."CreatedBy"=L1."DocEntry" AND L5."DocLineNum"=L1."LineNum"
+WHERE 
+(
+L0."DocDate" >= [%0]  AND  L0."DocDate" <= [%1] AND (L1."WhsCode" = '[%3]' or '[%3]' = '')
+AND (L1."ItemCode" = '[%4]' or '[%4]' = '')  AND IFNULL(L6."U_BPP_TIPOWSH",'')='00'
+) OR ( IFNULL(L6."U_BPP_TIPOWSH",'')<>'00' AND L1."FinncPriod"=(SELECT "AbsEntry" FROM "OFPR" WHERE "F_RefDate"<=CURRENT_DATE AND CURRENT_DATE<="T_RefDate") )
+
+)
+
+
+UNION ALL
+
+(SELECT 
+L1."VisOrder"+1 "Nro Linea",L1."ItemCode" "Código Articulo",L2."ItemName" "Artículo",L1."Quantity"*-1 "Cantidad",L1."unitMsr" "Unidad",
+L5."CalcPrice",L5."TransValue",
+L0."DocDate" "Fecha Cont.",L0."TaxDate" "Fecha Documento",L1."WhsCode" "Almacén",L1."U_VS_DOCSAP" "Vale",
+'SALIDA POR VENTA' "Documento",'SALIDA' "Tipo de Documento",
+L0."DocNum" "Nro Documento" ,IFNULL(L3."Name",'') "Familia",
+IFNULL(L4."Name",'') "Subfamilia",
+L1."OcrCode" "CC1 Modelo Negocio",L1."OcrCode2" "CC2 Unidades",L1."OcrCode3" "CC3 Areas",L1."OcrCode4" "CC4 Labores",
+L1."OcrCode5" "CC5 Equipo",L1."Project" "Proyecto",
+L1."U_VS_SERDOC" "Solicitante",L0."Ref2" "Responsable",
+NULL,NULL,NULL,NULL,NULL,NULL,NULL
+FROM
+"ODLN" L0 INNER JOIN "DLN1" L1 ON L0."DocEntry"=L1."DocEntry"
+LEFT JOIN "OITM" L2 ON L1."ItemCode"=L2."ItemCode"
+LEFT JOIN "@CL_ODIV" L3 ON L2."U_CL_CODDIV"=L3."Code"
+LEFT JOIN "@CL_OSDI" L4 ON L2."U_CL_CODLIN"=L4."Code"
+INNER JOIN "OINM" L5 ON L5."TransType"=15 AND L5."CreatedBy"=L1."DocEntry" AND L5."DocLineNum"=L1."LineNum"
+WHERE 
+IFNULL(L0."CANCELED",'')='N' AND  IFNULL(L2."ItemType",'')<>'F' AND IFNULL(L2."InvntItem",'')='Y' AND
+L0."DocDate" >= [%0]  AND L0."DocDate" <= [%1] AND (L1."WhsCode" = '[%3]' or '[%3]' = '')
+AND (L1."ItemCode" = '[%4]' or '[%4]' = '') )
+
+UNION ALL
+
+
+(SELECT 
+L1."VisOrder"+1 "Nro Linea",L1."ItemCode" "Código Articulo",L2."ItemName" "Artículo",L1."Quantity"*1 "Cantidad",L1."unitMsr" "Unidad",
+L5."CalcPrice",L5."TransValue",
+L0."DocDate" "Fecha Cont.",L0."TaxDate" "Fecha Documento",L1."WhsCode" "Almacén",L1."U_VS_DOCSAP" "Vale",
+'DEVOLUCIÓN DE VENTAS' "Documento",'INGRESO' "Tipo de Documento",
+L0."DocNum" "Nro Documento" ,IFNULL(L3."Name",'') "Familia",
+IFNULL(L4."Name",'') "Subfamilia",
+L1."OcrCode" "CC1 Modelo Negocio",L1."OcrCode2" "CC2 Unidades",L1."OcrCode3" "CC3 Areas",L1."OcrCode4" "CC4 Labores",
+L1."OcrCode5" "CC5 Equipo",L1."Project" "Proyecto",
+L1."U_VS_SERDOC" "Solicitante",L0."Ref2" "Responsable",
+NULL,NULL,NULL,NULL,NULL,NULL,NULL
+FROM
+"ORDN" L0 INNER JOIN "RDN1" L1 ON L0."DocEntry"=L1."DocEntry"
+LEFT JOIN "OITM" L2 ON L1."ItemCode"=L2."ItemCode"
+LEFT JOIN "@CL_ODIV" L3 ON L2."U_CL_CODDIV"=L3."Code"
+LEFT JOIN "@CL_OSDI" L4 ON L2."U_CL_CODLIN"=L4."Code"
+INNER JOIN "OINM" L5 ON L5."TransType"=16 AND L5."CreatedBy"=L1."DocEntry" AND L5."DocLineNum"=L1."LineNum"
+WHERE 
+IFNULL(L0."CANCELED",'')='N' AND  IFNULL(L2."ItemType",'')<>'F' AND IFNULL(L2."InvntItem",'')='Y' AND
+L0."DocDate" >= [%0]  AND L0."DocDate" <= [%1] AND (L1."WhsCode" = '[%3]' or '[%3]' = '')
+AND (L1."ItemCode" = '[%4]' or '[%4]' = '') )
+
+
+UNION ALL
+
+SELECT 
+L1."VisOrder"+1 "Nro Linea",L1."ItemCode" "Código Articulo",L2."ItemName" "Artículo",L1."Quantity"*-1 "Cantidad",L1."unitMsr" "Unidad",
+L5."CalcPrice",L5."TransValue",
+L0."DocDate" "Fecha Cont.",L0."TaxDate" "Fecha Documento",L1."WhsCode" "Almacén",L1."U_VS_DOCSAP" "Vale",
+'NOTA CREDITO COMPRAS' "Documento",'SALIDA' "Tipo de Documento",
+L0."DocNum" "Nro Documento" ,IFNULL(L3."Name",'') "Familia",
+IFNULL(L4."Name",'') "Subfamilia",
+L1."OcrCode" "CC1 Modelo Negocio",L1."OcrCode2" "CC2 Unidades",L1."OcrCode3" "CC3 Areas",L1."OcrCode4" "CC4 Labores",
+L1."OcrCode5" "CC5 Equipo",L1."Project" "Proyecto",
+L1."U_VS_SERDOC" "Solicitante",L0."Ref2" "Responsable",
+NULL,NULL,NULL,NULL,NULL,NULL,NULL
+FROM
+"ORPC" L0 INNER JOIN "RPC1" L1 ON L0."DocEntry"=L1."DocEntry"
+LEFT JOIN "OITM" L2 ON L1."ItemCode"=L2."ItemCode"
+LEFT JOIN "@CL_ODIV" L3 ON L2."U_CL_CODDIV"=L3."Code"
+LEFT JOIN "@CL_OSDI" L4 ON L2."U_CL_CODLIN"=L4."Code"
+INNER JOIN "OINM" L5 ON L5."TransType"=19 AND L5."CreatedBy"=L1."DocEntry" AND L5."DocLineNum"=L1."LineNum"
+WHERE 
+IFNULL(L0."CANCELED",'')='N' AND  IFNULL(L2."ItemType",'')<>'F' AND IFNULL(L2."InvntItem",'')='Y' AND (L5."InQty">0 OR L5."OutQty">0) AND
+L0."DocDate" >= [%0]  AND L0."DocDate" <= [%1] AND (L1."WhsCode" = '[%3]' or '[%3]' = '')
+AND (L1."ItemCode" = '[%4]' or '[%4]' = '')
+
+UNION ALL
+
+SELECT 
+L1."VisOrder"+1 "Nro Linea",L1."ItemCode" "Código Articulo",L2."ItemName" "Artículo",L1."Quantity" "Cantidad",L1."unitMsr" "Unidad",
+L5."CalcPrice",L5."TransValue",
+L0."DocDate" "Fecha Cont.",L0."TaxDate" "Fecha Documento",L1."WhsCode" "Almacén",L1."U_VS_DOCSAP" "Vale",
+'FACTURA COMPRAS' "Documento",'INGRESO' "Tipo de Documento",
+L0."DocNum" "Nro Documento" ,IFNULL(L3."Name",'') "Familia",
+IFNULL(L4."Name",'') "Subfamilia",
+L1."OcrCode" "CC1 Modelo Negocio",L1."OcrCode2" "CC2 Unidades",L1."OcrCode3" "CC3 Areas",L1."OcrCode4" "CC4 Labores",
+L1."OcrCode5" "CC5 Equipo",L1."Project" "Proyecto",
+L1."U_VS_SERDOC" "Solicitante",L0."Ref2" "Responsable",
+NULL,NULL,NULL,NULL,NULL,NULL,NULL
+FROM
+"OPCH" L0 INNER JOIN "PCH1" L1 ON L0."DocEntry"=L1."DocEntry"
+LEFT JOIN "OITM" L2 ON L1."ItemCode"=L2."ItemCode"
+LEFT JOIN "@CL_ODIV" L3 ON L2."U_CL_CODDIV"=L3."Code"
+LEFT JOIN "@CL_OSDI" L4 ON L2."U_CL_CODLIN"=L4."Code"
+INNER JOIN "OINM" L5 ON L5."TransType"=18 AND L5."CreatedBy"=L1."DocEntry" AND L5."DocLineNum"=L1."LineNum"
+WHERE IFNULL(L0."CANCELED",'')='N' AND  IFNULL(L2."ItemType",'')<>'F' AND IFNULL(L2."InvntItem",'')='Y'
+AND (L5."InQty">0 OR L5."OutQty">0) AND
+L0."DocDate" >= [%0]  AND L0."DocDate" <= [%1] AND (L1."WhsCode" = '[%3]' or '[%3]' = '')
+AND (L1."ItemCode" = '[%4]' or '[%4]' = '')
+UNION ALL
+
+SELECT 
+L1."VisOrder"+1 "Nro Linea",L1."ItemCode" "Código Articulo",L2."ItemName" "Artículo",L1."Quantity" "Cantidad",L1."unitMsr" "Unidad",
+L5."CalcPrice",L5."TransValue",
+L0."DocDate" "Fecha Cont.",L0."TaxDate" "Fecha Documento",L1."WhsCode" "Almacén",L1."U_VS_DOCSAP" "Vale",
+'NOTA CREDITO VENTAS' "Documento",'INGRESO' "Tipo de Documento",
+L0."DocNum" "Nro Documento" ,IFNULL(L3."Name",'') "Familia",
+IFNULL(L4."Name",'') "Subfamilia",
+L1."OcrCode" "CC1 Modelo Negocio",L1."OcrCode2" "CC2 Unidades",L1."OcrCode3" "CC3 Areas",L1."OcrCode4" "CC4 Labores",
+L1."OcrCode5" "CC5 Equipo",L1."Project" "Proyecto",
+L1."U_VS_SERDOC" "Solicitante",L0."Ref2" "Responsable",
+NULL,NULL,NULL,NULL,NULL,NULL,NULL
+FROM
+"ORIN" L0 INNER JOIN "RIN1" L1 ON L0."DocEntry"=L1."DocEntry"
+LEFT JOIN "OITM" L2 ON L1."ItemCode"=L2."ItemCode"
+LEFT JOIN "@CL_ODIV" L3 ON L2."U_CL_CODDIV"=L3."Code"
+LEFT JOIN "@CL_OSDI" L4 ON L2."U_CL_CODLIN"=L4."Code"
+INNER JOIN "OINM" L5 ON L5."TransType"=14 AND L5."CreatedBy"=L1."DocEntry" AND L5."DocLineNum"=L1."LineNum"
+WHERE IFNULL(L0."CANCELED",'')='N' AND  IFNULL(L2."ItemType",'')<>'F' AND IFNULL(L2."InvntItem",'')='Y'
+AND (L5."InQty">0 OR L5."OutQty">0)
+AND
+L0."DocDate" >= [%0]  AND L0."DocDate" <= [%1] AND (L1."WhsCode" = '[%3]' or '[%3]' = '')
+AND (L1."ItemCode" = '[%4]' or '[%4]' = '')

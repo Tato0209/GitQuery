@@ -1,0 +1,1 @@
+SELECT T0."ItemCode",T0."AvgPrice", T0."WhsCode" FROM OITW T0 INNER JOIN OITM T1 ON T0."ItemCode" = T1."ItemCode" WHERE T0."WhsCode" =[%0] AND  T1."InvntItem" ='Y'

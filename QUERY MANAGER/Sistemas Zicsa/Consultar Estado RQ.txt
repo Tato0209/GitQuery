@@ -1,0 +1,1 @@
+SELECT C."DocNum" as "RQ", D."ItemCode" as Codigo, D."Dscription" as Descripcion, C."Comments", D."Quantity" as Cantidad, D."Project" as "Proyecto",  D."OcrCode3" as "Area", D."OcrCode5" as "Equipo.",  C."TaxDate" as Fecha, D."TrgetEntry" as OC FROM OPRQ C INNER JOIN PRQ1 D ON C."DocEntry"=D."DocEntry"  WHERE C."TaxDate">=[%0] and C."TaxDate"<=[%1] order by C."TaxDate";

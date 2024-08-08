@@ -1,0 +1,4 @@
+SELECT "FatherNum","AcctCode","CurrTotal" ,CASE "ActCurr" WHEN '##' THEN 'TODAS' ELSE "ActCurr" END "Moneda"
+,CASE "FrozenFor" WHEN 'N' THEN 'ACTIVO' ELSE 'INACTIVO' END "Estado" ,"AcctName",
+"Levels",CASE "Postable" WHEN 'Y' THEN 'CUENTA ACTIVA' ELSE 'TÍTULO' END "Tipo" FROM "OACT"
+ORDER BY "AcctCode","FatherNum"

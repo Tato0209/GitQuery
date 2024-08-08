@@ -1,0 +1,10 @@
+SELECT T0."DocNum",CASE WHEN I1."ProcesStat"='W' THEN 'Pendiente' ELSE 'Otro' END "Estado"
+,T0."CreateDate" "Fecha de Envio a Flujo", T0."CardCode", T0."CardName",T0."DocCur",
+CASE WHEN T0."DocCur"='SOL' THEN  T0."DocTotal" ELSE  T0."DocTotalFC" END "Total", 
+T0."Comments", T0."U_FLUJOC"
+FROM  
+"OWDD" I1 
+INNER JOIN "WDD1" I2 ON I1."WddCode"=I2."WddCode"
+INNER JOIN "OUSR" T1 ON T1."USERID"=I2."UserID"
+INNER JOIN "ODRF" T0 ON I1."DraftEntry"=T0."DocEntry" AND  I1."ObjType"=22 
+WHERE  T1."USER_CODE"='gerencia' AND I1."ProcesStat"='W'

@@ -1,0 +1,49 @@
+SELECT distinct
+
+T0."Account" as "Cuenta",
+(SELECT "AcctName" FROM OACT WHERE "AcctCode"=T0."Account") as "NCuenta", 
+(SELECT SUM ("Debit"-"Credit") from jdt1 where "RefDate" between '20180101' and '20180131'  AND "OcrCode2"=T0."OcrCode2" and "Account"=T0."Account") as "ENERO",
+(SELECT SUM ("Debit"-"Credit") from jdt1 where "RefDate" between '20180201' and '20180228'  AND "OcrCode2"=T0."OcrCode2" and "Account"=T0."Account") AS "FEBRERO",
+(SELECT SUM ("Debit"-"Credit") from jdt1 where "RefDate" between '20180301' and '20180331'  AND "OcrCode2"=T0."OcrCode2" and "Account"=T0."Account") AS "MARZO",
+(SELECT SUM ("Debit"-"Credit") from jdt1 where "RefDate" between '20180401' and '20180430'  AND "OcrCode2"=T0."OcrCode2" and "Account"=T0."Account") AS "ABRIL",
+(SELECT SUM ("Debit"-"Credit") from jdt1 where "RefDate" between '20180501' and '20180531'  AND "OcrCode2"=T0."OcrCode2" and "Account"=T0."Account") AS "MAYO",
+(SELECT SUM ("Debit"-"Credit") from jdt1 where "RefDate" between '20180601' and '20180630'  AND "OcrCode2"=T0."OcrCode2" and "Account"=T0."Account") AS "JUNIO",
+(SELECT SUM ("Debit"-"Credit") from jdt1 where "RefDate" between '20180701' and '20180731'  AND "OcrCode2"=T0."OcrCode2" and "Account"=T0."Account") AS "JULIO",
+(SELECT SUM ("Debit"-"Credit") from jdt1 where "RefDate" between '20180801' and '20180831'  AND "OcrCode2"=T0."OcrCode2" and "Account"=T0."Account") AS "AGOSTO",
+(SELECT SUM ("Debit"-"Credit") from jdt1 where "RefDate" between '20180901' and '20180930'  AND "OcrCode2"=T0."OcrCode2" and "Account"=T0."Account") AS "SEPTIEMBRE",
+(SELECT SUM ("Debit"-"Credit") from jdt1 where "RefDate" between '20181001' and '20181031'  AND "OcrCode2"=T0."OcrCode2" and "Account"=T0."Account") AS "OCTUBRE",
+(SELECT SUM ("Debit"-"Credit") from jdt1 where "RefDate" between '20181101' and '20181130'  AND "OcrCode2"=T0."OcrCode2" and "Account"=T0."Account") AS "NOVIEMBRE",
+(SELECT SUM ("Debit"-"Credit") from jdt1 where "RefDate" between '20181201' and '20181231'  AND "OcrCode2"=T0."OcrCode2" and "Account"=T0."Account") AS "DICIEMBRE",
+
+(SELECT SUM ("Debit"-"Credit") from jdt1 where "RefDate" between '20180101' and '20181231'  AND "OcrCode2"=T0."OcrCode2" and "Account"=T0."Account") AS "TOTAL",
+
+--T0."LineMemo" AS "COMENTARIOS", 
+--T0."RefDate" AS "F.CONTA", 
+--T0."ProfitCode" AS "CC1",  
+T0."OcrCode2" AS "CC2"
+--T0."OcrCode3" AS "CC3",
+--T0."OcrCode4" AS "CC4",
+--T0."OcrCode5" AS "CC5",
+--T0."Ref1" AS "REF"
+
+FROM JDT1 T0
+
+WHERE T0."RefDate">'20180101' AND  T0."RefDate"<='20180531'
+
+AND LEFT(T0."Account",1)<>'1'
+AND LEFT(T0."Account",1)<>'2'
+AND LEFT(T0."Account",1)<>'3'
+AND LEFT(T0."Account",1)<>'4'
+AND LEFT(T0."Account",1)<>'5'
+AND LEFT(T0."Account",1)<>'6'
+AND LEFT(T0."Account",1)<>'8'
+AND T0."Account"<>'7761001'
+AND T0."Account"<>'7761101'
+AND T0."Account"<>'761101'
+AND T0."Account"<>'7761002'
+AND T0."Account"<>'97761101'
+AND T0."Account"<>'9776101'
+AND T0."Account"<>'9776102'
+AND T0."Account"<>'97761101'
+AND T0."Account"<>'7911101'
+ORDER BY T0."Account" ASC;

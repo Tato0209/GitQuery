@@ -1,0 +1,6 @@
+if  $[OPOR.DocTotal] > 3500.00 and $[OPOR.DocTotal]<=10000.00 AND $[OPOR.U_FLUJOC]='GSD'
+then
+select 'TRUE' from DUMMY;
+else
+select 'FALSE' from DUMMY;
+END IF;

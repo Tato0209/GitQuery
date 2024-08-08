@@ -1,0 +1,10 @@
+SELECT DISTINCT
+
+T1."DocDate",T1."DocEntry",T1."DocNum", T3."DocDate", T3."DocEntry", T3."DocNum"
+
+FROM
+
+OPDN T1 INNER JOIN PCH1 T2 ON T1."DocEntry"=T2."BaseEntry"
+		INNER JOIN OPCH T3 ON T2."DocEntry"=T3."DocEntry"
+		
+WHERE T3."DocDate"<T1."DocDate" AND T1."CANCELED"='N' AND T3."CANCELED"='N'AND T1."DocType"='I' AND T3."DocType"='I'

@@ -1,0 +1,24 @@
+SELECT 
+
+ T2."TransId" as "Transacción",
+ T2."DocNum" as "Primario",
+ T2."Comments" as "Comentario"
+
+
+FROM JDT1 T1 INNER JOIN OINV T2 ON T1."TransId"=T2."TransId"
+
+and T1."RefDate" BETWEEN  [%0] AND  [%1]
+
+UNION ALL
+
+SELECT 
+
+ T2."TransId" as "Transacción",
+ T2."DocNum" as "Primario",
+ T2."Comments" as "Comentario"
+
+
+FROM JDT1 T1 INNER JOIN ORIN T2 ON T1."TransId"=T2."TransId"
+
+and T1."RefDate" BETWEEN  [%0] AND  [%1] 
+ORDER BY "Transacción"

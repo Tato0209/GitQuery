@@ -1,0 +1,1 @@
+SELECT T0."DocNum",T0."Requester", T0."ReqName",  T0."DocStatus", T0."CreateDate", T0."DocDate", T0."ReqDate" FROM OPRQ T0 WHERE T0."CreateDate" BETWEEN ADD_DAYS(NOW(),-3) AND NOW() AND T0."DocStatus"<>'C' ORDER BY T0."DocNum"

@@ -1,0 +1,13 @@
+SELECT T0."ItemCode", T0."ItemName", T0."LastPurPrc", T0."LastPurCur" FROM OITM T0
+WHERE LEFT(T0."ItemCode",3) <>'339' 
+AND LEFT(T0."ItemCode",3) <>'336' 
+AND LEFT(T0."ItemCode",3) <>'335' 
+AND LEFT(T0."ItemCode",3) <>'334' 
+AND LEFT(T0."ItemCode",3) <>'333' 
+AND LEFT(T0."ItemCode",3) <>'322' 
+AND LEFT(T0."ItemCode",3) <>'331' 
+AND LEFT(T0."ItemCode",3) <>'332' 
+AND LEFT(T0."ItemCode",3) <>'132' 
+AND LEFT(T0."ItemCode",3) <>'131' 
+AND LEFT(T0."ItemCode",3) <>'013' 
+ORDER BY "ItemCode"

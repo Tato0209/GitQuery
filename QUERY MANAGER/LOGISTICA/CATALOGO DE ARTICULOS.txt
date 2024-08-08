@@ -1,0 +1,6 @@
+SELECT T0."ItemCode",T0."ItemName",CASE T0."InvntItem" WHEN 'Y' THEN 'SI' ELSE 'NO' END "Articulo Inventario",CASE T0."SellItem" WHEN 'Y' THEN 'SI' ELSE 'NO' END "Articulo Venta", CASE T0."PrchseItem" WHEN 'Y' THEN 'SI' ELSE 'NO' END "Articulo Compra",
+T0."ItmsGrpCod",T1."ItmsGrpNam",T2."Name" "Familia",T3."Name" "Subdivisión"
+FROM "OITM" T0 
+INNER JOIN "OITB" T1 ON T0."ItmsGrpCod"=T1."ItmsGrpCod"
+LEFT JOIN	"@CL_ODIV" T2 ON T0."U_CL_CODDIV"=T2."Code"
+LEFT JOIN "@CL_OSDI" T3 ON T0."U_CL_CODLIN"=T3."Code"

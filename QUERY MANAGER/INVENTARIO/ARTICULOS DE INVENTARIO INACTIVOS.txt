@@ -1,0 +1,7 @@
+SELECT T0."ItemCode",T0."ItemName",T0."InvntItem",T0."SellItem",T0."PrchseItem",
+T0."ItmsGrpCod",T1."ItmsGrpNam",T2."Name" "División",T3."Name" "Subdivisión"
+FROM "OITM" T0 
+INNER JOIN "OITB" T1 ON T0."ItmsGrpCod"=T1."ItmsGrpCod"
+LEFT JOIN	"@CL_ODIV" T2 ON T0."U_CL_CODDIV"=T2."Code"
+LEFT JOIN "@CL_OSDI" T3 ON T0."U_CL_CODLIN"=T3."Code"
+WHERE T0."InvntItem"='Y' AND T0."ItemType"='I'  AND T0."validFor"='N' AND T0."frozenFor"='Y'

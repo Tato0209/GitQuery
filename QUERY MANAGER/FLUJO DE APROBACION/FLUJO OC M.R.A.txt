@@ -1,0 +1,6 @@
+if  $[OPOR.U_FLUJOC]='MRA'
+then
+select 'TRUE' from DUMMY;
+else
+select 'FALSE' from DUMMY;
+END IF;

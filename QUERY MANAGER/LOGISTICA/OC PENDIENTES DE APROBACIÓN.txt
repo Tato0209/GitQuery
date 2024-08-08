@@ -1,0 +1,24 @@
+SELECT 
+T0."DocEntry",
+T0."CardCode" "Cod. Proveedor",T0."CardName" "Proveedor",
+T1."VisOrder"+1 "NroLinea",T1."ItemCode" "Cod. Articulo",T1."Dscription" "Articulo",
+CASE WHEN T1."Quantity"=0 THEN 1.0 ELSE T1."Quantity" END "Cantidad",
+T1."unitMsr", T0."DocCur" "Moneda",T0."SysRate"  "T/C",
+CASE WHEN T0."DocCur"='SOL' THEN T1."Price" ELSE T1."Price"*T0."SysRate" END "PU S/."
+,CASE WHEN T0."DocCur"='SOL' THEN T1."Price"/T0."SysRate"  ELSE T1."Price" END "PU $/.",
+CASE WHEN T0."DocCur"='SOL' THEN T1."LineTotal"  ELSE T1."Price"*T0."SysRate"*T1."Quantity" END  "SubTotal S/",
+CASE WHEN T0."DocCur"='SOL' THEN T1."Price"/T0."SysRate"*T1."Quantity"  ELSE  T1."TotalFrgn"  END "SubTotal $/",
+T1."LineVat" "Impuesto S/",T1."LineVat"/T0."SysRate"  "Impuesto $/",
+T1."OcrCode" "CC1 Modelo Negocio",T1."OcrCode2" "CC2 Unidades",T1."OcrCode3" "CC3 Areas",T1."OcrCode4" "CC4 Labores",T1."OcrCode5" "CC5 Equipo",T1."Project",
+T1."BaseRef" "Requerimiento",
+T0."Comments",T0."U_FLUJOC"
+FROM "ODRF" T0  
+INNER JOIN "DRF1" T1 ON T0."DocEntry" = T1."DocEntry"
+INNER JOIN "OWDD" I1 ON  T0."DocEntry" = I1."DocEntry" AND  T0."ObjType"=22 
+WHERE  
+--I1."WtmCode" =26 
+--AND 
+T0."WddStatus"='W'
+ORDER BY T0."DocDate" DESC;
+
+---SELECT * FROM "WDD1" ORDER BY 1 DESC

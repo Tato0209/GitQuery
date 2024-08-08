@@ -1,0 +1,9 @@
+SELECT T0."DocNum",T0."DocDate",
+CASE WHEN T0."DocStatus"='C' THEN 'CERRADO' ELSE 'ABIERTO' END "Status de documento",T0."Requester",T0."ReqName",T0."U_FLUJOC",T1."ItemCode",
+T1."Dscription",T1."FreeTxt",T1."Quantity",T1."unitMsr",T1."U_CL_UCOMPRA" ,T1."U_CL_MON",  T1."OcrCode" "CC1 Modelo Negocio",T1."OcrCode2" "CC2 Unidades",T1."OcrCode3" "CC3 Areas",T1."OcrCode4" "CC4 Labores",T1."OcrCode5" "CC5 Equipo",T1."Project",T1."U_CL_PRE_CUENTA",T0."Comments"
+,T1."AcctCode",T8."Name" "Division",T9."Name" "Subdivision"
+FROM "OPRQ" T0 INNER JOIN "PRQ1" T1 ON T0."DocEntry"=T1."DocEntry" 
+ INNER JOIN "OITM" T7 ON T1."ItemCode"=T7."ItemCode"
+ LEFT JOIN "@CL_ODIV" T8 ON T7."U_CL_CODDIV"=T8."Code"
+ LEFT JOIN "@CL_OSDI" T9 ON T7."U_CL_CODLIN"=T9."Code"
+WHERE T0."CANCELED"='N' AND T0."DocDate">='[%1]'  AND T0."DocDate"<='[%2]'

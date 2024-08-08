@@ -1,0 +1,5 @@
+SELECT DISTINCT T0."ItemCode",T0."Dscription",T0."AcctCode",T2."ItmsGrpNam",T8."Name" "Division",T9."Name" "Subdivision",'Activo' "Estado" FROM "RDR1" T0
+INNER JOIN "OITM" T1 ON T0."ItemCode"=T1."ItemCode"
+INNER JOIN "OITB" T2 ON T1."ItmsGrpCod"=T2."ItmsGrpCod"
+LEFT JOIN "@CL_ODIV"  T8 ON T1."U_CL_CODDIV"=T8."Code"
+LEFT JOIN "@CL_OSDI"  T9 ON T1."U_CL_CODLIN"=T9."Code"

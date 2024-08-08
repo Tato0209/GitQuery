@@ -1,0 +1,1 @@
+SELECT  CASE WHEN MAX (O."NumAtCard")='' THEN '0001' ELSE RIGHT ('0000'|| MAX (O."NumAtCard") +1,4) END  from OPOR O;

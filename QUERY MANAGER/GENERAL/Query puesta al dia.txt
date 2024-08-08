@@ -1,0 +1,34 @@
+SELECT 'FACTURA CLIENTES' AS "FACTURA CLIENTES", T0."DocEntry", T0."CardName", T0."NumAtCard", T0."DocDate", T0."DocCur", T0."DocTotal", T0."DocTotalFC", T1."USER_CODE", T1."U_NAME" , T0."CreateDate" FROM "OINV" T0  INNER JOIN "OUSR" T1 ON T0."UserSign" = T1."USERID" WHERE T0."CreateDate" >=[%0] and T0."CreateDate" <=[%1] and  IFNULL(T0."NumAtCard",'') not like '%%ANUL%%' AND T0."U_BPP_MDTD"='01' and T0."CreateDate"<>T0."DocDate"
+union all
+SELECT 'BOLETA CLIENTES' AS "BOLETA CLIENTES", T0."DocEntry", T0."CardName", T0."NumAtCard", T0."DocDate", T0."DocCur", T0."DocTotal", T0."DocTotalFC", T1."USER_CODE", T1."U_NAME", T0."CreateDate" FROM "OINV" T0  INNER JOIN "OUSR" T1 ON T0."UserSign" = T1."USERID" WHERE T0."CreateDate" >=[%0] and T0."CreateDate" <=[%1] and  IFNULL(T0."NumAtCard",'') not like '%%ANUL%%' AND T0.U_BPP_MDTD='03' and T0."CreateDate"<>T0."DocDate"
+union all
+SELECT 'ORDEN DE COMPRA' AS "ORDEN DE COMPRA", Tl0."DocEntry", Tl0."CardName", Tl0."NumAtCard", Tl0."DocDate", Tl0."DocCur", Tl0."DocTotal", Tl0."DocTotalFC", Tl1."USER_CODE", Tl1."U_NAME", Tl0."CreateDate" FROM "OPOR" Tl0  INNER JOIN "OUSR" Tl1 ON Tl0."UserSign" = Tl1."USERID" WHERE Tl0."CreateDate" >=[%0] and Tl0."CreateDate" <=[%1] and  IFNULL(Tl0."NumAtCard",'') not like '%%ANUL%%' and Tl0."CreateDate"<>Tl0."DocDate"
+union all
+SELECT 'ORDEN DE VENTA' AS "ORDEN DE VENTA", Tl0."DocEntry", Tl0."CardName", Tl0."NumAtCard", Tl0."DocDate", Tl0."DocCur", Tl0."DocTotal", Tl0."DocTotalFC", Tl1."USER_CODE", Tl1."U_NAME", Tl0."CreateDate" FROM "ORDR" Tl0  INNER JOIN "OUSR" Tl1 ON Tl0."UserSign" = Tl1."USERID" WHERE Tl0."CreateDate" >=[%0] and Tl0."CreateDate" <=[%1] and  IFNULL(Tl0."NumAtCard",'') not like '%%ANUL%%' and Tl0."CreateDate"<>Tl0."DocDate"
+
+union all
+SELECT 'FACTURA DE COMPRA' AS "FACTURA DE COMPRA", T0."DocEntry", T0."CardName", T0."NumAtCard", T0."DocDate", T0."DocCur", T0."DocTotal", T0."DocTotalFC", T1."USER_CODE", T1."U_NAME", T0."CreateDate" FROM "OPCH" T0  INNER JOIN "OUSR" T1 ON T0."UserSign" = T1."USERID" WHERE T0."CreateDate" >=[%0] and T0."CreateDate" <=[%1] and  IFNULL(T0."NumAtCard",'') not like '%%ANUL%%' and T0."CreateDate"<>T0."DocDate"
+union all
+SELECT 'GUIA DE VENTAS' AS "GUIA DE VENTAS", T0."DocEntry", T0."CardName", T0."NumAtCard", T0."DocDate", T0."DocCur", T0."DocTotal", T0."DocTotalFC", T1."USER_CODE", T1."U_NAME", T0."CreateDate" FROM "ODLN" T0  INNER JOIN "OUSR" T1 ON T0."UserSign" = T1."USERID" WHERE T0."CreateDate" >=[%0] and T0."CreateDate" <=[%1] and  IFNULL(T0."NumAtCard",'') not like '%%ANUL%%' and T0."CreateDate"<>T0."DocDate"
+union all
+SELECT 'OFERTA DE VENTAS' AS "OFERTA DE VENTAS", T0."DocEntry", T0."CardName", T0."NumAtCard", T0."DocDate", T0."DocCur", T0."DocTotal", T0."DocTotalFC", T1."USER_CODE", T1."U_NAME", T0."CreateDate" FROM "OQUT" T0  INNER JOIN "OUSR" T1 ON T0."UserSign" = T1."USERID" WHERE T0."CreateDate" >=[%0] and T0."CreateDate" <=[%1] and  IFNULL(T0."NumAtCard",'') not like '%%ANUL%%' and T0."CreateDate"<>T0."DocDate"
+union all
+SELECT 'NOTA DE CREDITO DE VENTAS' AS "NOTA DE CREDITO DE VENTAS", T0."DocEntry", T0."CardName", T0."NumAtCard", T0."DocDate", T0."DocCur", T0."DocTotal", T0."DocTotalFC", T1."USER_CODE", T1."U_NAME", T0."CreateDate" FROM "ORIN" T0  INNER JOIN "OUSR" T1 ON T0."UserSign" = T1."USERID" WHERE T0."CreateDate">=[%0] and T0."CreateDate" <=[%1] and  IFNULL(T0."NumAtCard",'') not like '%%ANUL%%' and T0."CreateDate"<>T0."DocDate"
+union all
+SELECT 'NOTA DE CREDITO DE COMPRAS' AS "NOTA DE CREDITO DE COMPRAS", T0."DocEntry", T0."CardName", T0."NumAtCard", T0."DocDate", T0."DocCur", T0."DocTotal", T0."DocTotalFC", T1."USER_CODE", T1."U_NAME", T0."CreateDate" FROM "ORPC" T0  INNER JOIN "OUSR" T1 ON T0."UserSign" = T1."USERID" WHERE T0."CreateDate" >=[%0] and T0."CreateDate" <=[%1] and  IFNULL(T0."NumAtCard",'') not like '%%ANUL%%' and T0."CreateDate"<>T0."DocDate"
+union all
+SELECT 'ENTRADA DE MERCADERIAS' AS "ENTRADA DE MERCADERIAS", T0."DocEntry", T0."CardName", T0."NumAtCard", T0."DocDate", T0."DocCur", T0."DocTotal", T0."DocTotalFC", T1."USER_CODE", T1."U_NAME", T0."CreateDate" FROM "OPDN" T0  INNER JOIN "OUSR" T1 ON T0."UserSign" = T1."USERID" WHERE T0."CreateDate" >=[%0] and T0."CreateDate" <=[%1] and  IFNULL(T0."NumAtCard",'') not like '%%ANUL%%' and T0."CreateDate"<>T0."DocDate"
+union all
+SELECT 'PAGOS EFECTUADOS' AS "PAGOS EFECTUADOS", T0."DocEntry", T0."CardName", T0."Comments", T0."DocDate", T0."DocCurr", T0."DocTotal", T0."DocTotalFC", T1."USER_CODE", T1."U_NAME", T0."CreateDate" FROM "OVPM" T0  INNER JOIN "OUSR" T1 ON T0."UserSign" = T1."USERID" WHERE T0."CreateDate" >=[%0] and T0."CreateDate" <=[%1] and  IFNULL(T0."Canceled",'') not like '%%Y%%' and T0."CreateDate"<>T0."DocDate"
+union all
+SELECT 'PAGOS RECIBIDOS' AS "PAGOS RECIBIDOS", T0."DocEntry", T0."CardName", T0."Comments", T0."DocDate", T0."DocCurr", T0."DocTotal", T0."DocTotalFC", T1."USER_CODE", T1."U_NAME", T0."CreateDate" FROM "ORCT" T0  INNER JOIN "OUSR" T1 ON T0."UserSign" = T1."USERID" WHERE T0."CreateDate" >=[%0] and T0."CreateDate" <=[%1] and  IFNULL(T0."Canceled",'') not like '%%Y%%' and T0."CreateDate"<>T0."DocDate"
+union all
+SELECT 'ORDEN DE FABRICACION' AS "ORDEN DE FABRICACION", T0."DocEntry", T0."CardCode", T0."JrnlMemo", T0."PostDate", 'SOL' , 0.00, 0.00, T1."USER_CODE", T1."U_NAME", T0."CreateDate" FROM "OWOR" T0  INNER JOIN "OUSR" T1 ON T0."UserSign" = T1."USERID" WHERE T0."CreateDate" >=[%0] and T0."CreateDate" <=[%1] and  IFNULL(T0."U_VS_Anulada",'') = 'N' and T0."CreateDate"<>T0."PostDate"
+union all
+SELECT 'ENTRADAS INVENTARIO' AS "ENTRADAS INVENTARIO", T0."DocEntry", '', T0."Comments", T0."DocDate", 'SOL', T0."DocTotal", T0."DocTotalFC", T1."USER_CODE", T1."U_NAME", T0."CreateDate" FROM "OIGN" T0  INNER JOIN "OUSR" T1 ON T0."UserSign" = T1."USERID" WHERE T0."CreateDate" >=[%0] and T0."CreateDate" <=[%1] and T0."CreateDate"<>T0."DocDate"
+union all
+SELECT 'SALIDAS INVENTARIO' AS "SALIDAS INVENTARIO", T0."DocEntry", '', T0."Comments", T0."DocDate", 'SOL', T0."DocTotal", T0."DocTotalFC", T1."USER_CODE", T1."U_NAME", T0."CreateDate" FROM "OIGE" T0  INNER JOIN "OUSR" T1 ON T0."UserSign" = T1."USERID" WHERE T0."CreateDate" >=[%0] and T0."CreateDate" <=[%1] and T0."CreateDate"<>T0."DocDate"
+union all
+SELECT 'TRANSFERENCIAS DE STOCK' AS "SALIDAS INVENTARIO", T0."DocEntry", '', T0."Comments", T0."DocDate", 'SOL', T0."DocTotal", T0."DocTotalFC", T1."USER_CODE", T1."U_NAME", T0."CreateDate" FROM "OWTR" T0  INNER JOIN "OUSR" T1 ON T0."UserSign" = T1."USERID" WHERE T0."CreateDate" >=[%0] and T0."CreateDate" <=[%1] and T0."CreateDate"<>T0."DocDate"
+union all
+SELECT 'REQUERIMIENTOS' AS "SALIDAS INVENTARIO", T0."DocEntry", '', T0."Comments", T0."DocDate", 'SOL', T0."DocTotal", T0."DocTotalFC", T1."USER_CODE", T1."U_NAME", T0."CreateDate" FROM "OPRQ" T0  INNER JOIN "OUSR" T1 ON T0."UserSign" = T1."USERID" WHERE T0."CreateDate" >=[%0] and T0."CreateDate" <=[%1] and T0."CreateDate"<>T0."DocDate"

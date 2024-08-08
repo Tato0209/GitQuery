@@ -1,0 +1,18 @@
+SELECT T0."TransId" "Transacción" ,T0."DocNum"  "Primario" ,T0."Comments" "Comentario",MAX(T2."DocDate") "Fecha Pago" 
+FROM "OINV" T0 LEFT JOIN "RCT2" T1 ON T1."InvType"=13 AND T0."DocEntry" = T1."DocEntry"
+AND (SELECT "Canceled" FROM "ORCT" WHERE "DocEntry"=T1."DocNum")='N'
+LEFT JOIN "ORCT" T2 ON T1."DocNum" = T2."DocEntry"
+WHERE
+T0."DocDate" BETWEEN  [%0] AND  [%1] AND T0."CANCELED"='N'
+GROUP BY  T0."TransId"  ,T0."DocNum" ,T0."Comments" 
+
+
+UNION ALL
+
+SELECT T0."TransId" "Transacción",T0."DocNum" "Primario" ,T0."Comments" "Comentario" ,T2."DocDate" "Fecha Pago" FROM "ORIN" T0 LEFT JOIN "RCT2" T1 ON T1."InvType"=14 AND T0."DocEntry" = T1."DocEntry"
+AND (SELECT "Canceled" FROM "ORCT" WHERE "DocEntry"=T1."DocNum")='N'
+LEFT JOIN "ORCT" T2 ON T1."DocNum" = T2."DocEntry"
+
+WHERE T0."DocDate" BETWEEN  [%0] AND  [%1] AND T0."CANCELED"='N'
+
+ORDER BY "Transacción"

@@ -1,0 +1,1 @@
+SELECT T0."ItemCode", T0."ItemName",T0."PrchseItem",  (SELECT count (Tk0."ItemCode") FROM OITM Tk0 WHERE Tk0."ItemName"=T0."ItemName"), T0."OnHand" FROM OITM T0 WHERE T0."InvntItem" ='Y' AND  T0."OnHand" =0 AND  (SELECT count (Tk0."ItemCode") FROM OITM Tk0 WHERE Tk0."ItemName"=T0."ItemName")>1

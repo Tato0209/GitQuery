@@ -1,0 +1,1 @@
+SELECT T0."ItemCode", T0."ItemName", T1."OcrCode" AS "CC Modelo Negocio", T1."OcrCode2" AS "CC Unidad", T1."OcrCode3" AS "CC Areas" FROM OITM T0  INNER JOIN ITM6 T1 ON T0."ItemCode" = T1."ItemCode" WHERE T1."OcrCode2" = 'CHIPMO'

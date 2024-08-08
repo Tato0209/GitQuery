@@ -1,0 +1,4 @@
+IF LEFT($[OCRD.LicTradNum],1)='1'
+THEN
+SELECT SUBSTRING ($[OCRD.CardName],LOCATE ($[OCRD.CardName], '  '),20) FROM DUMMY;
+END IF;

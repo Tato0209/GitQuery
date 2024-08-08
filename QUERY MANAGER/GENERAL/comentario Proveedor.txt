@@ -1,0 +1,1 @@
+SELECT T0."DocNum", T0."CardName", T0."DocDate", T0."Comments" FROM OPOR T0 WHERE T0."DocDate" >=[%0] AND  T0."DocDate" <=[%1]

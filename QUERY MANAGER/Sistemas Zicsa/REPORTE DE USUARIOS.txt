@@ -1,0 +1,8 @@
+SELECT  T0."INTERNAL_K",T0."USER_CODE",T0."U_NAME",T1."Name", t0.USERID,
+CASE WHEN T0."MobileUser"='N' THEN 'NO' ELSE 'SI' END "Usuario Movil",
+CASE WHEN T0."SUPERUSER"='N' THEN 'NO' ELSE 'SI' END "Super Usuario",
+CASE WHEN T0."Locked"='N' THEN 'NO' ELSE 'SI' END "Bloqueado", T0."U_CL_SEDE",
+'ZICSA' "EMPRESA"
+FROM "OUSR" T0 
+LEFT JOIN "OUDP" T1 ON T0."Department" = T1."Code"
+WHERE T0."GROUPS"<>99

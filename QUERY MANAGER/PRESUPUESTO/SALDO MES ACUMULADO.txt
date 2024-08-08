@@ -1,0 +1,1 @@
+Select SUM ("LineTotal") from PDN1 T1 INNER JOIN OPDN T2 ON  T1."DocEntry"=T2."DocEntry" where  T2."CANCELED"='N' AND T1."DocDate" BETWEEN '20180101' AND NOW()  AND T1."AcctCode"=$[$38.29.1] and T1."Project"=$[$38.31.1] and T1."OcrCode"=$[$38.2004.1] and T1."OcrCode2"=$[$38.2003.1] and T1."OcrCode3"=$[$38.2002.1];

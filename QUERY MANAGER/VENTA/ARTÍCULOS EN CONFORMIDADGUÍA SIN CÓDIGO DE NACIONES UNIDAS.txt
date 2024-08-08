@@ -1,0 +1,4 @@
+SELECT T0."DocEntry" "ID",T0."DocNum",T1."VisOrder"+1 "Nro Linea",T1."ItemCode",T2."ItemName",T2."U_VS_CODCLA" "Codigo Naciones Unidas" FROM "DLN1" T1 
+INNER JOIN "ODLN" T0 ON T0."DocEntry"=T1."DocEntry" 
+INNER JOIN "OITM" T2 ON T1."ItemCode"=T2."ItemCode"
+WHERE T0."DocStatus"='O' AND IFNULL(T2."U_VS_CODCLA",'')=''

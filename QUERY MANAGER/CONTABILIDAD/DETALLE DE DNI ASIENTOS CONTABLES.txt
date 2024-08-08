@@ -1,0 +1,7 @@
+SELECT T0."TransId", T0."RefDate", T0."Memo", T1."Account",T1."Line_ID"+1,
+  T1."Debit", T1."Credit",T1."BalDueDeb", T1."BalDueCred", T1."Ref1", T1."Ref2",
+   T1."Ref3Line", T1."LineMemo", T1."ProfitCode", T1."OcrCode2", T1."OcrCode3",
+    T1."OcrCode4", T1."OcrCode5", T1."Project", T1."U_INFOPE02" 
+    FROM OJDT T0  INNER JOIN JDT1 T1 ON T0."TransId" = T1."TransId" 
+    WHERE T1."Account" =[%0] 
+    AND (T1."BalDueDeb">0 OR T1."BalDueCred">0) ORDER BY T0."RefDate", T1."Line_ID"

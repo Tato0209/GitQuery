@@ -1,0 +1,17 @@
+SELECT T1."DocNum", CASE WHEN T0."TrgetEntry" IS NULL THEN 0 ELSE  T0."TrgetEntry" END as Preliminar,
+T0."ItemCode" as "Codigo Prod" , T0."Dscription" as Descripcion, 
+T0."Quantity" as Cantidad, T0."unitMsr" as Unidad ,T1."TaxDate" as "Fecha RQ", 
+CASE WHEN T2."U_VS_CLSBYS" = 1 THEN 'OC ACTIVO FIJO' ELSE 'ORDEN DE COMPRA' END as "TIPO DOCUMENTO",
+T1."ReqName" as "SOLICITANTE",
+T1."Comments" as Comentario , T2."DocNum" as OC, T2."DocDate" as "FECHA OC", 
+(SELECT L."PymntGroup" FROM OCTG L WHERE  L."GroupNum"=T2."GroupNum") as "COND DE PAGO",
+T2."DocCur" as "MONEDA", T2."CardName" as "Proveedor", T21."Price" as "PRECIO",  T21."Currency" as "MONEDA", 
+T21."ItemCode",  T21."Dscription" as "DESCRIPCION", T21."Quantity",
+(SELECT T."Rate" from ORTT T where T."RateDate"=  T2."DocDate") as "TC"
+
+FROM PRQ1 T0
+RIGHT JOIN OPRQ T1 ON T1."DocEntry" = T0."DocEntry"
+LEFT JOIN POR1 T21 ON T0."TrgetEntry" = T21."DocEntry" and T0."ItemCode" = T21."ItemCode"
+LEFT JOIN OPOR T2 ON T21."DocEntry" = T2."DocEntry"
+
+WHERE T1."TaxDate">= [%0] and T1."TaxDate"<= [%1];

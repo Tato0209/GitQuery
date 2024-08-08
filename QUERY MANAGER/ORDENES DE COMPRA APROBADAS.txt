@@ -1,0 +1,15 @@
+SELECT 
+		T0."DocNum" as "Número",
+		CASE WHEN T0."DocStatus"='O' THEN 'ABIERTO' ELSE 'CERRADO' END "Estado",
+		T0."DocDate" AS "Fecha Crea.",T2."U_NAME", T0."CardCode", T0."CardName", T0."DocCur" as "Moneda OC",
+		T0."DocTotal" as "Total S/", T0."DocTotalFC" AS "Total $" ,
+		T0."Comments", T0."U_FLUJOC",T1."ItemCode", T1."Dscription", T1."Quantity" as "Cant. Unitario", T1."Price" as "Precio Unitario",
+		(SELECT MAX(T5."U_NAME") "Nombre de Usuario Aprobador"
+		FROM "OWDD" T3 INNER JOIN "WDD1" T4 ON T4."WddCode"=T3."WddCode" INNER JOIN "OUSR" T5 ON T5."USERID"=T4."UserID"
+		WHERE T3."DocEntry" = T0."DocEntry"
+		AND T4."SortId" = (SELECT MAX(T40."SortId")FROM "OWDD" T30 INNER JOIN "WDD1" T40 ON T40."WddCode"=T30."WddCode" WHERE T30."DocEntry" = T0."DocEntry")) AS "Último Aprobador"
+FROM OPOR T0  
+INNER JOIN POR1 T1 ON T0."DocEntry" = T1."DocEntry" 
+INNER JOIN OUSR T2 ON T0."UserSign" = T2."USERID" 
+WHERE  T0."DocDate" >= '[%0]' AND T0."DocDate" <= '[%1]'
+and T0."CANCELED"='N' ORDER BY T0."DocNum" desc

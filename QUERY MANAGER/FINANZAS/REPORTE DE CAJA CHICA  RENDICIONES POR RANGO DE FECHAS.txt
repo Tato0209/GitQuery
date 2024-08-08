@@ -1,0 +1,8 @@
+SELECT T0."DocNum",T0."CardCode","CardName",T0."DocDate",T0."TaxDate"
+,T0."NumAtCard",'SOL' "Moneda",T0."DocTotal",T0."Comments",
+CASE WHEN IFNULL(T0."U_NUMCC",'')<>'' THEN T0."U_NUMCC" ELSE T0."U_NUMER" END "Numero Caja/Rendición" , 'GASTO SUSTENTADO' "Tipo Gasto" FROM "OPCH" T0 
+WHERE T0."CANCELED"='N' AND (IFNULL(T0."U_NUMCC",'')<>'' OR IFNULL(T0."U_NUMER",'')<>'') AND  T0."DocDate" >= '[%1]' AND T0."DocDate" <= '[%2]'
+UNION ALL
+
+SELECT T0."DocNum",'S/N','S/N',T0."DocDate",T0."TaxDate",'S/N','SOL' "Moneda",T0."DocTotal",T0."Comments",
+"U_NROOP",'GASTO NO SUSTENTADO' "Tipo Gasto"  FROM "OVPM" T0 WHERE T0."DocDate" >= '[%1]' AND T0."DocDate" <= '[%2]' AND T0."U_CLASEOP" IN ('GPC','GPR') AND T0."Canceled"='N';

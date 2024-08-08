@@ -1,0 +1,16 @@
+SELECT T0."TransId" "Transacción" ,T0."DocNum"  "Primario" ,T0."Comments" "Comentario",T2."DocDate" "Fecha Pago" FROM "OPCH" T0 LEFT JOIN "VPM2" T1 ON T1."InvType"=18 AND T0."DocEntry" = T1."DocEntry"
+AND ((SELECT "JrnlMemo" FROM "OVPM" WHERE "DocEntry"=T1."DocNum") NOT LIKE '%Detracciones%') 
+AND (SELECT "Canceled" FROM "OVPM" WHERE "DocEntry"=T1."DocNum")='N'
+LEFT JOIN "OVPM" T2 ON T1."DocNum" = T2."DocEntry"
+WHERE T0."DocDate" BETWEEN  [%0] AND  [%1]
+
+UNION ALL
+
+SELECT T0."TransId" "Transacción",T0."DocNum" "Primario" ,T0."Comments" "Comentario" ,T2."DocDate" "Fecha Pago" FROM "ORPC" T0 LEFT JOIN "VPM2" T1 ON T1."InvType"=19 AND T0."DocEntry" = T1."DocEntry"
+AND (SELECT "Canceled" FROM "OVPM" WHERE "DocEntry"=T1."DocNum")='N'
+LEFT JOIN "OVPM" T2 ON T1."DocNum" = T2."DocEntry"
+
+WHERE T0."DocDate" BETWEEN  [%0] AND  [%1]
+
+
+ORDER BY "Transacción"

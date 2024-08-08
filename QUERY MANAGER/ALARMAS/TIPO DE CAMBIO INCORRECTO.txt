@@ -1,0 +1,1 @@
+SELECT T0.*,T1."U_NAME" FROM "ORTT" T0 INNER JOIN "OUSR" T1 ON T0."UserSign"=T1."USERID" WHERE T0."Currency"='USD' AND ( T0."Rate"<3 OR T0."Rate">5)

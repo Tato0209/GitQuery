@@ -1,0 +1,1 @@
+SELECT "ItemType",LENGTH("ItemName"),* FROM "OITM" WHERE "ItemType"='F' AND LENGTH("ItemName")>97

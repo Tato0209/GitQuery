@@ -1,0 +1,39 @@
+SELECT 
+
+T0."Account" AS "CUENTA", 
+(SELECT "Memo" from OJDT WHERE "TransId"=T0."TransId") as "SOCIO DE NEGOCIO",
+(SELECT "AcctName" FROM OACT WHERE "AcctCode"=T0."Account") as "NCuenta", 
+T0."TransId" AS "TRANSACCION", 
+T0."Debit" as "DEBITO", 
+T0."Credit" AS "CREDITO",
+T0."LineMemo" AS "COMENTARIOS", 
+T0."RefDate" AS "F.CONTA", 
+T0."ProfitCode" AS "CC1", 
+T0."OcrCode2" AS "CC2", 
+T0."Debit"-T0."Credit" AS "SALDO",
+T0."OcrCode3" AS "CC3", 
+T0."OcrCode4" AS "CC4", 
+T0."OcrCode5" AS "CC5", 
+T0."Project" AS "PROY", 
+T0."Ref1" AS "REF",
+T0."Ref2" AS "DOCUMENTO",
+T0."TransType" AS "ORIGEN",
+T2."U_NAME" AS "USUARIO",
+T0."U_CL_PRE_CUENTA" 
+FROM JDT1 T0
+INNER JOIN "OJDT" T1 ON T0."TransId"=T1."TransId"
+INNER JOIN "OUSR" T2 ON T1."UserSign"=T2."USERID"
+WHERE T0."RefDate">=[%0]  AND  T0."RefDate"<=[%1]
+AND LEFT(T0."Account",1)<>'1'
+AND LEFT(T0."Account",1)<>'2'
+AND LEFT(T0."Account",1)<>'3'
+AND LEFT(T0."Account",1)<>'4'
+AND LEFT(T0."Account",1)<>'5'
+AND LEFT(T0."Account",1)<>'6'
+AND LEFT(T0."Account",1)<>'8'
+--AND T0."Account"<>'7761001'
+--AND T0."Account"<>'7761101'
+--AND T0."Account"<>'97761101'
+--AND T0."Account"<>'97761101'
+AND T0."Account"<>'7911101'
+ORDER BY T0."Account" ASC;

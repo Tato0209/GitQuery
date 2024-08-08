@@ -1,0 +1,6 @@
+if  ( $[OPOR.DocTotal] > 10000.00 AND $[OPOR.DocTotal] <= 70000.00 AND  $[OPOR.U_FLUJOC]='ADM' AND  $[OPOR.U_VS_CLSBYS]='1' )
+then
+select 'TRUE' from DUMMY;
+else
+select 'FALSE' from DUMMY;
+END IF;

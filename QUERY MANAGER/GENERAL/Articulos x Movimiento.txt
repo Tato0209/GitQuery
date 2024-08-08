@@ -1,0 +1,4 @@
+SELECT  P."ItemCode", P."ItemName" ,T2."Code", T2."U_CL_NOMGRUP", T2."Name" 
+FROM OITM P 
+INNER JOIN OITB T1 ON P."ItmsGrpCod" = T1."ItmsGrpCod" 
+INNER JOIN "@BPVSN_INGSAL"  T2 ON T1."ItmsGrpNam"=T2."U_CL_NOMGRUP" where T2."Name" LIKE 'COM%'

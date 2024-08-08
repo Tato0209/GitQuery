@@ -1,0 +1,33 @@
+SELECT T0."TransId",T1."Line_ID"+1,T0."TransType","U_INFOPE02", T0."RefDate", T1."Account", T1."LineMemo" ,  Substring(T1."Account",1,2) 
+FROM OJDT T0  INNER JOIN JDT1 T1 ON T0."TransId" = T1."TransId"
+ WHERE T0."TaxDate" >'20230601'  
+ AND T1."Account" in (
+'4111101',
+'4111102',
+'4111103',
+'4111402',
+'4111403',
+'4111502',
+'4111503',
+'4131101',
+'4151101',
+'4151102',
+'4151103',
+'4151104',
+'4151105',
+'4171101',
+'4191114',
+'1411101',
+'1411102',
+'1411103',
+'1412101',
+'1412102',
+'1412103',
+'1412104',
+'1412105',
+'1412106',
+'1413101',
+'1413102')
+
+ 
+ and (IFNULL(T1."U_INFOPE02",'') ='' OR  IFNULL(T1."LineMemo",'') ='')

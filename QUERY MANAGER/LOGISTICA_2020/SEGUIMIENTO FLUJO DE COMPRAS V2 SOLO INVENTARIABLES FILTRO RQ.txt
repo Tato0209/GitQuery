@@ -1,0 +1,298 @@
+CALL "FlujodeAutorizacionOC"(FLUJOAUTORIZACIONOC);
+
+SELECT 
+
+(SELECT "DocNum" FROM OPRQ WHERE "DocEntry"=T2."DocEntry") as "NRO SOLICITUD COMPRA",
+(SELECT "CreateDate" FROM OPRQ WHERE "DocEntry"=T2."DocEntry") as "FECHA SOLICITUD COMPRA",
+--(SELECT "U_CL_BACKLOG" FROM OPRQ WHERE "DocEntry"=T2."DocEntry") as "BACKLOG",
+CASE  WHEN LEFT (T2."ItemCode",3)='001' THEN (SELECT 'COMBUSTIBLES' FROM DUMMY)
+	  WHEN LEFT (T2."ItemCode",3)='002' THEN (SELECT 'LUBRICANTES Y REFRIGERANTES' FROM DUMMY)
+	  WHEN LEFT (T2."ItemCode",3)='003' THEN (SELECT 'HERRAMIENTAS, FERRETERIA Y ELECTRICOS' FROM DUMMY)
+	  WHEN LEFT (T2."ItemCode",3)='004' THEN (SELECT 'LLANTAS Y ACCESORIOS' FROM DUMMY)
+	  WHEN LEFT (T2."ItemCode",3)='005' THEN (SELECT 'FILTROS' FROM DUMMY)
+	  WHEN LEFT (T2."ItemCode",3)='006' THEN (SELECT 'PROTECCIÓN AMBIENTAL Y PERSONAL' FROM DUMMY)
+	  WHEN LEFT (T2."ItemCode",3)='007' THEN (SELECT 'REPUESTOS' FROM DUMMY)
+	  WHEN LEFT (T2."ItemCode",3)='008' THEN (SELECT 'OFICINA Y BIENESTAR SOCIAL' FROM DUMMY)
+	  WHEN LEFT (T2."ItemCode",3)='009' THEN (SELECT 'MANGUERAS HIDRAULICAS Y ACCESORIOS' FROM DUMMY)
+	  WHEN LEFT (T2."ItemCode",3)='010' THEN (SELECT 'TUBERIAS Y ACCESORIOS' FROM DUMMY)
+	  WHEN LEFT (T2."ItemCode",3)='011' THEN (SELECT 'ACEROS' FROM DUMMY)
+	  WHEN LEFT (T2."ItemCode",3)='012' THEN (SELECT 'MATERIAL DE SOSTENIMIENTO' FROM DUMMY)
+	  WHEN LEFT (T2."ItemCode",3)='013' THEN (SELECT 'SERVICIOS DE COMPRA' FROM DUMMY)
+	  WHEN LEFT (T2."ItemCode",2)='33' THEN (SELECT 'ACTIVOS FIJOS' FROM DUMMY)
+	  END AS "FAMILIA",
+	  
+	  (SELECT "ReqName" FROM OPRQ WHERE "DocEntry"=T2."DocEntry") as "SOLICITANTE COMPRA",
+	  
+	--  (SELECT LEFT(MONTHNAME("DocDate"),3)  FROM OPRQ WHERE "DocEntry"=T2."DocEntry") as "NOMBRE MES",
+--(SELECT "DocDate" FROM OPRQ WHERE "DocEntry"=T2."DocEntry") as "FECHA SOLICITUD COMPRA",
+
+
+	  
+CASE WHEN (SELECT "LineStatus" FROM PRQ1 WHERE "DocEntry"=T2."DocEntry" AND "LineNum"=T2."LineNum")='C' THEN (SELECT 'Cerrado' FROM DUMMY)
+	 WHEN (SELECT "LineStatus" FROM PRQ1 WHERE "DocEntry"=T2."DocEntry" AND "LineNum"=T2."LineNum")='O' THEN (SELECT 'Abierto' FROM DUMMY)
+	 WHEN (SELECT "CANCELED" FROM OPRQ WHERE "DocEntry"=T2."DocEntry")='Y' THEN (SELECT 'Cancelado' FROM DUMMY)
+END AS "ESTADO SOLICITUD DE COMPRA",
+
+--(SELECT "draftKey" FROM OPOR WHERE "DocEntry"=T1."DocEntry") AS "PRELIMINAR",		
+T2."LineNum"+1 AS "LINEA",
+T2."ItemCode" as "ARTICULO",
+--T2."LegalText" as "Tipo de Artículo",
+--(SELECT "U_CL_NUMPAR" FROM OITM WHERE "ItemCode"=T2."ItemCode") as "Num Parte",
+T2."unitMsr" as "UM",
+
+(SELECT "ItemName" FROM OITM WHERE "ItemCode"=T2."ItemCode") as "DESCRIPCIÓN",
+T2."Quantity" as "CANTIDAD SOLICITUD",
+(SELECT "Comments" FROM OPRQ WHERE "DocEntry"=T2."DocEntry") as "COMENTARIOS",
+
+--(SELECT "DocDate" FROM OPRQ WHERE "DocEntry"=T2."DocEntry") as "FECHA RQ",
+--(SELECT "CreateDate" FROM OPRQ WHERE "DocEntry"=T2."DocEntry") as "FECHA CREACION RQ",
+T2."OcrCode"	as "CC1",
+T2."OcrCode2"    as "CC2",
+T2."OcrCode3" as "CC3",
+T2."OcrCode4" as "CC4",
+T2."OcrCode5" as "CC5",
+T2."Project" as "PROY",
+
+NULL "COMPRADORPORDEFECTO",
+NULL "NROPRELIMINAROC",
+NULL "ESTADOPRELIMINAROC",
+NULL "CANTIDADPRELIMINAROC",
+NULL "PROVEEDORPRELIMINAROC",
+
+NULL "COMPRADORPRELIMINAROC",
+
+NULL "ESTADO JENIFER BONELLI",
+NULL "ESTADO ALEJANDRA EGUSQUIZA",
+NULL "ESTADO MARISOL HADDAD",
+NULL "ESTADO ALFREDO CARHUAMACA",
+NULL "ESTADO DAVID ACHANCARAY",
+NULL "ESTADO GUSTAVO JO",
+
+
+
+
+(SELECT "DocNum" FROM OPOR WHERE "DocEntry"=T1."DocEntry") as "OC",
+(SELECT "DocDate" FROM OPOR WHERE "DocEntry"=T1."DocEntry") as "FECHA OC",
+T1."ShipDate" as "FECHA ENTREGA",
+T1."U_CL_NUEVAFECHAENTREGA" AS "FECHA ENTREGA MODIFICADA",
+T1."U_MSS_CMN" AS "COMENTARIO FECHA",
+(SELECT "CreateDate" FROM OPOR WHERE "DocEntry"=T1."DocEntry") as "FECHA CREACION OC",
+(SELECT "CardCode" FROM OPOR WHERE "DocEntry"=T1."DocEntry") as "CÓDIGO PROVEEDOR",
+(SELECT "CardName" FROM OPOR WHERE "DocEntry"=T1."DocEntry") as "NOMBRE PROVEEDOR",
+(SELECT "U_NAME" FROM OPOR O1 INNER JOIN OUSR O2 ON O1."UserSign"=O2."USERID" WHERE "DocEntry"=T1."DocEntry") as "USUARIO COMPRAS",
+(SELECT "Comments" FROM OPOR WHERE "DocEntry"=T1."DocEntry") as "COMENTARIOS OC",
+
+
+
+(SELECT I2."PymntGroup" FROM OPOR I1  INNER JOIN OCTG I2 ON I1."GroupNum"=I2."GroupNum" WHERE "DocEntry"=T1."DocEntry") as "CONDICION DE PAGO",
+(SELECT "DocCur" FROM OPOR WHERE "DocEntry"=T1."DocEntry") as "MONEDA",
+T1."Quantity" as "CANTIDAD OC",
+(SELECT "Rate" FROM ORTT WHERE "RateDate"=T1."DocDate") as "T/C",
+CASE WHEN (SELECT "DocCur" FROM OPOR WHERE "DocEntry"=T1."DocEntry")='USD'
+THEN
+T1."PriceBefDi"
+ELSE
+T1."PriceBefDi"/(SELECT "Rate" FROM ORTT WHERE "RateDate"=T1."DocDate")
+END AS "PU $",
+CASE WHEN (SELECT "DocCur" FROM OPOR WHERE "DocEntry"=T1."DocEntry")='SOL'
+THEN
+T1."PriceBefDi"
+ELSE
+T1."PriceBefDi"*(SELECT "Rate" FROM ORTT WHERE "RateDate"=T1."DocDate")
+END AS "PU S/",
+CASE WHEN (SELECT "DocCur" FROM OPOR WHERE "DocEntry"=T1."DocEntry")='USD'
+THEN
+T1."PriceBefDi"*T1."Quantity"
+ELSE
+T1."PriceBefDi"/(SELECT "Rate" FROM ORTT WHERE "RateDate"=T1."DocDate")*T1."Quantity"
+END AS "PT $",
+CASE WHEN (SELECT "DocCur" FROM OPOR WHERE "DocEntry"=T1."DocEntry")='SOL'
+THEN
+T1."PriceBefDi"*T1."Quantity"
+ELSE
+T1."PriceBefDi"*(SELECT "Rate" FROM ORTT WHERE "RateDate"=T1."DocDate")*T1."Quantity"
+END AS "PT S/",
+
+CASE WHEN T1."LineStatus"='C' AND (SELECT "CANCELED" FROM OPOR WHERE "DocEntry"=T1."DocEntry")='N'  THEN (SELECT 'Cerrado' FROM DUMMY)
+	 WHEN T1."LineStatus"='O' AND (SELECT "CANCELED" FROM OPOR WHERE "DocEntry"=T1."DocEntry")='N' THEN (SELECT 'Abierto' FROM DUMMY)
+	 WHEN (SELECT "CANCELED" FROM OPOR WHERE "DocEntry"=T1."DocEntry")='Y' THEN (SELECT 'Cancelado' FROM DUMMY)
+END AS "ESTADO OC",
+T3."Quantity" as "CANTIDAD ENTRADA",
+(SELECT "DocNum" from OPDN WHERE "DocEntry"=T3."DocEntry") as "NÚMERO ENTRADA",
+T3."WhsCode" AS "ALMACEN ENTRADA",
+T9."WhsName" AS "NOMBRE ALMACEN ENTRADA",
+(SELECT "DocDate" from OPDN WHERE "DocEntry"=T3."DocEntry") as "FECHA ENTRADA",
+(SELECT "NumAtCard" from OPDN WHERE "DocEntry"=T3."DocEntry") as "GR ENTRADA",
+
+
+T5."U_BPV_NCON2" AS "T1 GR ENVÍO",
+T5."DocDate"  AS "T1 FECHA ENVÍO",
+T5."DocNum" AS "T1 NÚMERO TRANSFERENCIA",
+T4."U_CL_CLAVEB"  AS "T1 CLAVE BASE",
+T4."U_CL_LINEAB"+1  AS "T1 LINEA BASE",
+
+--T7."U_BPV_NCON2" AS "T2 GR RECEPCIÓN",
+T7."DocDate" AS "T2 FECHA RECEPCIÓN",
+T7."DocNum"  AS "T2 NÚMERO TRANSFERENCIA",
+T6."U_CL_CLAVEB"  AS "T2 CLAVE BASE",
+T6."U_CL_LINEAB"+1 AS "T2 LINEA BASE",
+T6."WhsCode" AS "ALMACEN FINAL",
+T10."WhsName" AS "NOMBRE ALMACEN FINAL" 
+
+--,
+
+--T6."DocEntry",
+--(SELECT MIN("U_BPV_NCON2") FROM OWTR O1 INNER JOIN WTR1 O2 ON O1."DocEntry"=O2."DocEntry" where O2."U_CL_CLAVEB"=T1."TrgetEntry") as "GR Envio",
+--(SELECT MIN(O1."DocDate") FROM OWTR O1 INNER JOIN WTR1 O2 ON O1."DocEntry"=O2."DocEntry" where O2."U_CL_CLAVEB"=T1."TrgetEntry") as "Fecha Envio",
+
+
+--,
+--DAYS_BETWEEN ((SELECT "CreateDate" FROM OPRQ WHERE "DocEntry"=T2."DocEntry"),(SELECT MIN(O1."DocDate") FROM OWTR O1 INNER JOIN WTR1 O2 ON O1."DocEntry"=O2."DocEntry" where O2."U_CL_CLAVEB"=T1."TrgetEntry")) as "Días de Atención"
+
+	
+FROM 
+
+POR1 T1 RIGHT JOIN PRQ1 T2 ON T1."BaseEntry"=T2."DocEntry" and T1."BaseLine"=T2."LineNum"
+LEFT OUTER  JOIN PDN1 T3 ON  T3."BaseEntry"= T1."DocEntry" AND T3."BaseType"= T1."ObjType" AND T3."BaseLine" = T1."LineNum" AND ((SELECT "CANCELED" FROM "OPDN" WHERE "DocEntry"=T3."DocEntry")='N')
+LEFT OUTER  JOIN WTR1 T4 ON T4."U_CL_CLAVEB"= T3."DocEntry"	AND (SELECT "U_CL_BASETYPE" FROM "OWTR" WHERE "DocEntry"=T4."DocEntry")='20' AND T4."U_CL_LINEAB"=T3."LineNum"
+LEFT OUTER JOIN OWTR T5 ON T4."DocEntry"=T5."DocEntry" AND T5."CANCELED"='N' AND T5."Comments" NOT LIKE '%cancelado%'
+LEFT OUTER  JOIN WTR1 T6 ON T6."U_CL_CLAVEB"= T4."DocEntry"	AND (SELECT "U_CL_BASETYPE" FROM "OWTR" WHERE "DocEntry"=T6."DocEntry")='67' AND T6."U_CL_LINEAB"=T4."LineNum"
+LEFT OUTER JOIN OWTR T7 ON T6."DocEntry"=T7."DocEntry" AND T7."CANCELED"='N' AND T7."Comments" NOT LIKE '%cancelado%'
+INNER JOIN OITM T8 ON T1."ItemCode"=T8."ItemCode"
+LEFT OUTER JOIN OWHS T9 ON T3."WhsCode"=T9."WhsCode"
+LEFT OUTER JOIN OWHS T10 ON T6."WhsCode"=T10."WhsCode"
+RIGHT JOIN OPRQ T11 ON T2."DocEntry"=T11."DocEntry"
+
+--	where T2."DocDate" BETWEEN   '20240101' AND  '20241231'  AND T1."BaseType"='1470000113' AND T6."DocEntry" IS NOT NULL
+	where T2."DocDate" BETWEEN   [%0] AND  [%1]  AND T1."BaseType"='1470000113' AND T8."InvntItem"='Y'
+                AND (T11."DocNum" = '[%2]' )
+
+UNION ALL
+
+---------------------------------------------RQ SIN COTIZACIÓN NI OC----------------------------
+SELECT 
+
+(SELECT "DocNum" FROM OPRQ WHERE "DocEntry"=T1."DocEntry") as "RQ",
+(SELECT "CreateDate" FROM OPRQ WHERE "DocEntry"=T1."DocEntry") as "FECHA CREACION RQ",
+--(SELECT "U_CL_BACKLOG" FROM OPRQ WHERE "DocEntry"=T1."DocEntry") as "BACKLOG",
+CASE  WHEN LEFT (T1."ItemCode",3)='001' THEN (SELECT 'COMBUSTIBLES' FROM DUMMY)
+	  WHEN LEFT (T1."ItemCode",3)='002' THEN (SELECT 'LUBRICANTES Y REFRIGERANTES' FROM DUMMY)
+	  WHEN LEFT (T1."ItemCode",3)='003' THEN (SELECT 'HERRAMIENTAS, FERRETERIA Y ELECTRICOS' FROM DUMMY)
+	  WHEN LEFT (T1."ItemCode",3)='004' THEN (SELECT 'LLANTAS Y ACCESORIOS' FROM DUMMY)
+	  WHEN LEFT (T1."ItemCode",3)='005' THEN (SELECT 'FILTROS' FROM DUMMY)
+	  WHEN LEFT (T1."ItemCode",3)='006' THEN (SELECT 'PROTECCIÓN AMBIENTAL Y PERSONAL' FROM DUMMY)
+	  WHEN LEFT (T1."ItemCode",3)='007' THEN (SELECT 'REPUESTOS' FROM DUMMY)
+	  WHEN LEFT (T1."ItemCode",3)='008' THEN (SELECT 'OFICINA Y BIENESTAR SOCIAL' FROM DUMMY)
+	  WHEN LEFT (T1."ItemCode",3)='009' THEN (SELECT 'MANGUERAS HIDRAULICAS Y ACCESORIOS' FROM DUMMY)
+	  WHEN LEFT (T1."ItemCode",3)='010' THEN (SELECT 'TUBERIAS Y ACCESORIOS' FROM DUMMY)
+	  WHEN LEFT (T1."ItemCode",3)='011' THEN (SELECT 'ACEROS' FROM DUMMY)
+	  WHEN LEFT (T1."ItemCode",3)='012' THEN (SELECT 'MATERIAL DE SOSTENIMIENTO' FROM DUMMY)
+	  WHEN LEFT (T1."ItemCode",3)='013' THEN (SELECT 'SERVICIOS DE COMPRA' FROM DUMMY)
+	  WHEN LEFT (T1."ItemCode",2)='33' THEN (SELECT 'ACTIVOS FIJOS' FROM DUMMY)
+      END AS "FAMILIA",
+	  
+	  (SELECT "ReqName" FROM OPRQ WHERE "DocEntry"=T1."DocEntry") as "Solicitante RQ",
+	--  (SELECT "DocDate" FROM OPRQ WHERE "DocEntry"=T1."DocEntry") as "FECHA RQ",
+
+--	  (SELECT LEFT(MONTHNAME("DocDate"),3)  FROM OPRQ WHERE "DocEntry"=T1."DocEntry") as "NOMBRE MES",
+	  
+CASE WHEN (SELECT "DocStatus" FROM OPRQ WHERE "DocEntry"=T1."DocEntry")='C' AND (SELECT "CANCELED" FROM OPRQ WHERE "DocEntry"=T1."DocEntry")='N' THEN (SELECT 'Cerrado' FROM DUMMY)
+	 WHEN (SELECT "DocStatus" FROM OPRQ WHERE "DocEntry"=T1."DocEntry")='O' AND (SELECT "CANCELED" FROM OPRQ WHERE "DocEntry"=T1."DocEntry")='N' THEN (SELECT 'Abierto' FROM DUMMY)
+	 WHEN (SELECT "CANCELED" FROM OPRQ WHERE "DocEntry"=T1."DocEntry")='Y' THEN (SELECT 'Cancelado' FROM DUMMY)
+END AS "Estado RQ",
+
+--(SELECT "draftKey" FROM OPOR WHERE "DocEntry"=T1."DocEntry") AS "PRELIMINAR",
+T1."LineNum"+1  "Linea",		
+T1."ItemCode" as "Artículo",
+--T1."LegalText" as "Tipo de Artículo",
+--(SELECT "U_CL_NUMPAR" FROM OITM WHERE "ItemCode"=T1."ItemCode") as "Num Parte",
+T1."unitMsr" as "UM",
+
+(SELECT "ItemName" FROM OITM WHERE "ItemCode"=T1."ItemCode") as "Descripción",
+T1."Quantity" as "Cantidad RQ",
+(SELECT "Comments" FROM OPRQ WHERE "DocEntry"=T1."DocEntry") as "Comentarios",
+
+--(SELECT "DocDate" FROM OPRQ WHERE "DocEntry"=T1."DocEntry") as "FECHA RQ",
+--(SELECT "CreateDate" FROM OPRQ WHERE "DocEntry"=T1."DocEntry") as "FECHA CREACION RQ",
+T1."OcrCode" as "CC1",
+T1."OcrCode2" as "CC2",
+T1."OcrCode3" as "CC3",
+T1."OcrCode4" as "CC4",
+T1."OcrCode5" as "CC5",
+T1."Project" as "PROY",
+
+T4."U_CL_COMPRADOR",
+T2."NUMEROBORRADOR" ,
+T2."ESTADOOC",
+T2."CANTIDAD",
+T2."PROVEEDOR",
+T2."COMPRADOR",
+T2."JENIFERBONELLI",
+T2."ALEJANDRAEGUSQUIZA",
+T2."MARISOLHADDAD",
+T2."ALFREDOCARHUAMACA",
+T2."DAVIDACHANCARAY",
+T2."GUSTAVOJO",
+
+
+
+
+NULL as "OC",
+NULL as "Código Proveedor",
+NULL as "Proveedor",
+NULL as "Usuario Compras",
+NULL as "Comentarios OC",
+NULL as "FECHA OC",
+NULL as "FECHA ENTREGA",
+NULL,
+NULL,
+NULL as "FECHA CREACION OC",
+NULL as "Condición de Pago",
+NULL as "Moneda",
+NULL as "Cantidad OC",
+NULL as "T/C",
+NULL AS "PU $",
+NULL AS "PU S/",
+NULL "PT $",
+NULL AS "PT S/",
+NULL AS "Estado OC",
+NULL as "Cantidad Entrada",
+NULL as "Fecha Entrada",
+NULL as "Numero Entrada",
+NULL,
+NULL "Nombre Almacen Entrada",
+NULL as "GR de Entrada",
+
+--NULL as "GR Envio",
+--NULL as "Fecha Envio",
+NULL,
+NULL,
+NULL,
+NULL,
+NULL,
+--NULL,
+NULL,
+NULL,
+NULL,
+NULL,
+NULL,
+NULL
+
+
+--NULL AS  "Días de Atención"
+FROM 
+
+PRQ1 T1
+INNER JOIN "OPRQ" T0 ON T0."DocEntry"=T1."DocEntry"
+LEFT JOIN :FLUJOAUTORIZACIONOC T2 ON T1."DocEntry"=T2."BASEENTRYOC" AND T1."LineNum"=T2."BASELINEOC"		
+INNER JOIN "OITM" T3 ON T1."ItemCode"=T3."ItemCode"
+LEFT JOIN "@CL_OSDI" T4 ON T3."U_CL_CODLIN"=T4."Code"
+		
+		where T1."DocDate" BETWEEN   [%0] AND  [%1]  AND T1."TargetType"=-1 AND "InvntItem"='Y'  AND T0."CANCELED"='N'
+                                AND (T0."DocNum" = '[%2]' )
+
+	--	where T1."DocDate" BETWEEN '20180419' AND '20180419' AND T1."TargetType"=-1	 
+
+--------------------------------------------- RQ CON COTIZACIÓN Y SIN OC----------------------------------
+
+ORDER BY "FECHA SOLICITUD COMPRA","NRO SOLICITUD COMPRA","LINEA" ASC ;

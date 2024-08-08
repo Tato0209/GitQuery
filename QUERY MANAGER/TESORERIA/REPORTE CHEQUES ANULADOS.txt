@@ -1,0 +1,7 @@
+SELECT T0."DocNum",T0."CardName",T0."DocDate",T0."DocCurr", 
+CASE WHEN T0."DocCurr"='SOL' THEN "DocTotal" ELSE "DocTotalFC"  END "ImportePago",T0."Comments",
+T0."TransId",
+T1."DueDate",T1."BankCode",T1."Branch",T1."AcctNum",T1."CheckSum",T1."CheckAct",T1."CheckAbs"
+FROM "OVPM" T0 INNER JOIN "VPM1" T1 ON T0."DocEntry"=T1."DocNum"
+
+WHERE T0."DocDate">=[%0] AND T0."DocDate"<=[%1] AND T0."Canceled"='Y'

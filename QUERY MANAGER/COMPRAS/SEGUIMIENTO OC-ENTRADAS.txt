@@ -1,0 +1,29 @@
+SELECT 
+
+T9."DocEntry" "IDRQ",T9."LineNum"+1 "NroLineaRQ",T9."ItemCode" "ArticuloRQ",T9."Dscription" "DescripcionRQ",T9."Quantity" "CantidadRQ",MAX(T1."BaseEntry") "Ultimo RQ",T0."DocDate" "FechaOC",T0."DocNum" "NroOC",T1."LineNum"+1 "NroLineaOC",T0."Project" "ProyectoOC",T1."ItemCode" "ArticuloOC",T1."Dscription" "DescripcionOC",T1."unitMsr" "U.Medida OC",T7."U_CL_DESCRI" "Division",
+T10."U_CL_DESCRI" "SubDivision",
+T1."Quantity" "Cantidad OC",T1."Price" "PrecioOC",T1."Currency" "MonedaOC",T8."U_NAME" "Nombre Comprador",MAX(T5."DocNum") "Ultima Entrada",IFNULL(SUM(T4."Quantity"),0) "Total Ingresos" 
+FROM "OPOR" T0 INNER JOIN "POR1" T1 ON T0."DocEntry" = T1."DocEntry"
+
+LEFT OUTER JOIN "PDN1" T4 ON T4."BaseEntry"= T1."DocEntry" AND T4."BaseType"= T1."ObjType" AND T4."BaseLine" = T1."LineNum"
+
+LEFT OUTER JOIN "OPDN" T5 ON T4."DocEntry" = T5."DocEntry"
+
+LEFT OUTER JOIN "OITM" T6 ON T1."ItemCode"=T6."ItemCode"
+
+LEFT OUTER JOIN "@CL_ODIV" T7 ON T6."U_CL_CODDIV"=T7."Code"
+
+LEFT OUTER JOIN "@CL_OSDI" T10 ON T6."U_CL_CODLIN"=T10."Code"
+
+
+LEFT OUTER JOIN "OUSR" T8 ON T0."UserSign"=T8."USERID"
+
+RIGHT OUTER JOIN "PRQ1" T9 ON T1."BaseEntry"= T9."DocEntry" AND T1."BaseType"= T9."ObjType" AND T1."BaseLine" = T9."LineNum"
+
+--AND T5."CANCELED"='N' AND T0."CANCELED"='N'
+
+GROUP BY T0."DocDate",T0."DocNum",T1."LineNum",T1."ItemCode",T1."Dscription",T1."unitMsr",T1."Quantity",T1."Price",T1."Currency",T7."U_CL_DESCRI",T0."Project",T8."U_NAME",T5."CANCELED",T0."CANCELED",T9."DocEntry",T9."ItemCode",T9."Dscription",T9."Quantity",T9."LineNum",T10."U_CL_DESCRI"
+
+HAVING T0."CANCELED"='N' AND IFNULL(T5."CANCELED",'')<>'Y' AND (T0."DocDate" BETWEEN   [%0] AND  [%1] )
+
+ORDER BY T0."DocNum" DESC;
