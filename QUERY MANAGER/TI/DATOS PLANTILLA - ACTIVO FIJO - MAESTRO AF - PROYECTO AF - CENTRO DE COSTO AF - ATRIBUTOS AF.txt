@@ -1,0 +1,35 @@
+SELECT T0."ItemCode",T0."ItemName",T0."ItemType",T0."AssetClass",T0."U_LN_ESTADOAF",T0."ItmsGrpCod"
+,T0."PrchseItem"
+,T0."SellItem"
+,T0."UserText"
+,T1."ItemCode" "ItemCodeProyecto"
+,TO_VARCHAR(T1."LineNum") "LineNumProyecto"
+,T1."ValidFrom" "ValidFromProyecto"
+,T1."ValidTo"	"ValidToProyecto"
+,T1."Project"
+,T2."ItemCode" "ItemCodeCC"
+,TO_VARCHAR(T2."LineNum") "LineNumCC"
+,T2."ValidFrom" "ValidFromCC"
+,T2."ValidTo"	"ValidToCC"
+,T2."OcrCode"
+,T2."OcrCode2"
+,T2."OcrCode3"
+,T2."OcrCode4"
+,T2."OcrCode5"
+,T3."ItemCode" "ItemCodeAtributo"
+,T3."AttriTxt1" "Marca"
+,T3."AttriTxt2" "Modelo"
+,T3."AttriDt43" "FechaAdquisicion"
+,T3."AttriDt44" "FechaSeVAF"
+,T3."AttriAm48" "MaximodeUnidadesProducidas"
+,T3."AttriAm50"	"Deprec.Acum.31/12"
+,T3."AttriPr55" "T/CFechaAdquis."
+
+ FROM "OITM" T0 
+ LEFT JOIN "ITM5" T1 ON T0."ItemCode"=T1."ItemCode"
+ LEFT JOIN "ITM6" T2 ON T0."ItemCode"=T2."ItemCode"
+ LEFT JOIN "ITM13" T3 ON T0."ItemCode"=T3."ItemCode"
+ 
+ 
+ WHERE "ItemType"='F'
+ORDER BY "CreateDate" ASC
